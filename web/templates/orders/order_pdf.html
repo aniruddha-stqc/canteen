@@ -7,14 +7,15 @@
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
+
     /* Custom styles for the header */
     .header-text {
       font-family: 'Comic Sans MS', sans-serif;
-      font-size: 12px;
+      font-size: 13px;
       text-align: center;
       text-decoration: underline;
-      margin-top: 5px;
-      margin-bottom: 5px;
+      margin-top: 0px;
+      margin-bottom: 0px;
     }
 
     /* Custom styles for the row with order and date */
@@ -70,6 +71,15 @@
       flex: 1; /* Make sure each table takes equal width */
     }
 
+    :root {
+      --non-veg-table-left-margin: 10px; /* Replace with calculated margin from Non-Veg table */
+      --veg-table-left-margin: 20px; /* Replace with calculated margin from Veg table */
+    }
+
+    .order-date-text {
+      font-family: 'Comic Sans MS', sans-serif;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -82,27 +92,21 @@
     </div>
   </div>
 
-  <!-- New Row (1 x 8 layout) ensuring it stays in one row -->
-  <div class="row">
-    <!-- Cell 1: ORDER RECEIVED BY : -->
-    <div class="col-3 order-date-text align-left">
-      <strong>ORDER RECEIVED BY :</strong>
-    </div>
-    <!-- Cell 2: Blank line (_____________) -->
-    <div class="col-2 order-date-text align-left">
-      <strong>________________</strong>
-    </div>
-    <!-- Cell 3: Empty space (to balance layout) -->
-    <div class="col-1"></div>
-    <!-- Cell 4: DATE : -->
-    <div class="col-2 order-date-text align-left">
-      <strong>DATE :</strong>
-    </div>
-    <!-- Cell 5: Date value (24-Nov-2024) -->
-    <div class="col-2 order-date-text align-left">
-      <strong>24-Nov-2024</strong>
-    </div>
+ <!-- Row for ORDER RECEIVED BY and DATE -->
+<div class="row align-items-center">
+  <!-- ORDER RECEIVED BY -->
+  <div class="col-auto order-date-text" style="margin-left: calc(var(--non-veg-table-left-margin));">
+    <strong>ORDER RECEIVED BY :</strong> <strong>________________</strong>
   </div>
+
+  <!-- Spacer to separate ORDER RECEIVED BY and DATE -->
+  <div class="col"></div>
+
+  <!-- DATE -->
+  <div class="col-auto order-date-text" style="margin-left: calc(var(--veg-table-left-margin));">
+    <strong>DATE :</strong> <strong>24-Nov-2024</strong>
+  </div>
+</div>
 
   <!-- New Row for the Tables (NON VEG THALI and VEG THALI) side by side -->
   <div class="tables-container">
@@ -121,14 +125,19 @@
         </thead>
         <tbody>
           <!-- Loop through orders to dynamically populate the non-veg thali data -->
-          {% for order in orders %}
+          {% for order in orders_nv %}
             <tr>
               <td>{{ forloop.counter }}</td>
               <td class="non-veg-thali">{{ order.customer_name }}</td>
-               <td>{{ order.concession_category }}</td>
-              <td>{{ order.extra }}</td>
-              <td>{{ order.price }}</td>
-              <td>{{ order.mode }}</td>
+              <td>{{ order.concession_category }}</td>
+              <td>
+                    {% if order.extra_item1 %}{{ order.extra_item1_name }} {% endif %}
+                    {% if order.extra_item2 %}{{ order.extra_item2_name }} {% endif %}
+                    {% if order.extra_item3 %}{{ order.extra_item3_name }} {% endif %}
+                    {% if order.extra_item4 %}{{ order.extra_item4_name }} {% endif %}
+              </td>
+              <td>{{ order.total_price }}</td>
+              <td>{{ order.pay_mode }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -148,10 +157,22 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Example row for VEG THALI, can be dynamically populated similarly -->
-          <tr><td>1</td><td class="veg-thali">Avishek Raychoudhur</td><td>Norm</td><td>Oml Sabji Rice Dal</td><td>80</td><td>C</td></tr>
-          <tr><td>2</td><td class="veg-thali">Avishek Raychoudhur</td><td>Norm</td><td>Oml Sabji Rice Dal</td><td>85</td><td>W</td></tr>
-          <!-- More rows... -->
+          <!-- Loop through orders to dynamically populate the non-veg thali data -->
+          {% for order in orders_vg %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td class="non-veg-thali">{{ order.customer_name }}</td>
+              <td>{{ order.concession_category }}</td>
+              <td>
+                    {% if order.extra_item1 %}{{ order.extra_item1_name }} {% endif %}
+                    {% if order.extra_item2 %}{{ order.extra_item2_name }} {% endif %}
+                    {% if order.extra_item3 %}{{ order.extra_item3_name }} {% endif %}
+                    {% if order.extra_item4 %}{{ order.extra_item4_name }} {% endif %}
+              </td>
+              <td>{{ order.total_price }}</td>
+              <td>{{ order.pay_mode }}</td>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>

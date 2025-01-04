@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from weasyprint import HTML
 from django.template.loader import render_to_string
-
-# Create your views here.
+from django.http import HttpResponse
+from weasyprint import HTML
+from django.template.loader import render_to_string
 from .models import Order  # Import the Order model
 
 # View to display all orders
@@ -15,10 +16,6 @@ def order_list(request):
     return render(request, 'orders/order_list.html', {'orders': orders})
 
 
-from django.http import HttpResponse
-from weasyprint import HTML
-from django.template.loader import render_to_string
-from .models import Order  # Ensure your Order model is correctly imported
 
 def generate_pdf(request):
     try:
@@ -29,8 +26,15 @@ def generate_pdf(request):
         if not orders:
             return HttpResponse("No orders found.", status=404)
 
-        # Render your HTML template to a string with the orders context
-        html_content = render_to_string('orders/order_pdf.html', {'orders': orders})
+        # Separate orders into Non-Veg and Veg based on `thali_type`
+        orders_nv = orders.filter(thali_type__startswith='NV_')
+        orders_vg = orders.filter(thali_type__startswith='VG_')
+
+          # Render your HTML template to a string with the separated orders context
+        html_content = render_to_string('orders/order_pdf.html', {
+            'orders_nv': orders_nv,
+            'orders_vg': orders_vg
+        })
 
         # Generate the PDF from the HTML content
         pdf = HTML(string=html_content).write_pdf()
@@ -46,4 +50,5 @@ def generate_pdf(request):
     except Exception as e:
         # Handle any errors that occur during PDF generation
         return HttpResponse(f"An error occurred: {e}", status=500)
+
 
