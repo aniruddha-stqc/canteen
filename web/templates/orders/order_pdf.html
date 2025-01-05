@@ -119,9 +119,10 @@
                     <td class="non-veg-thali">{{ order.customer_name }}</td>
                     <td>{{ order.concession_category }}</td>
                     <td>
-                        {% for extra in order.extra_items %}
-                        {{ extra }}
-                        {% endfor %}
+                        {% if order.extra_item1 %}{{ order.extra_item1_name }} {% endif %}
+                        {% if order.extra_item2 %}{{ order.extra_item2_name }} {% endif %}
+                        {% if order.extra_item3 %}{{ order.extra_item3_name }} {% endif %}
+                        {% if order.extra_item4 %}{{ order.extra_item4_name }} {% endif %}
                     </td>
                     <td>{{ order.total_price }}</td>
                     <td>{{ order.pay_mode }}</td>
@@ -151,9 +152,10 @@
                     <td class="veg-thali">{{ order.customer_name }}</td>
                     <td>{{ order.concession_category }}</td>
                     <td>
-                        {% for extra in order.extra_items %}
-                        {{ extra }}
-                        {% endfor %}
+                        {% if order.extra_item1 %}{{ order.extra_item1_name }} {% endif %}
+                        {% if order.extra_item2 %}{{ order.extra_item2_name }} {% endif %}
+                        {% if order.extra_item3 %}{{ order.extra_item3_name }} {% endif %}
+                        {% if order.extra_item4 %}{{ order.extra_item4_name }} {% endif %}
                     </td>
                     <td>{{ order.total_price }}</td>
                     <td>{{ order.pay_mode }}</td>
