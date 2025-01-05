@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from weasyprint import HTML
 from django.template.loader import render_to_string
 from .models import Order  # Import the Order model
+from django.utils import timezone
 
 # View to display all orders
 def order_list(request):
@@ -29,11 +30,12 @@ def generate_pdf(request):
         # Separate orders into Non-Veg and Veg based on `thali_type`
         orders_nv = orders.filter(thali_type__startswith='NV_')
         orders_vg = orders.filter(thali_type__startswith='VG_')
-
+        current_date = timezone.now()  # Get current date and time
           # Render your HTML template to a string with the separated orders context
         html_content = render_to_string('orders/order_pdf.html', {
             'orders_nv': orders_nv,
-            'orders_vg': orders_vg
+            'orders_vg': orders_vg,
+            'now': current_date
         })
 
         # Generate the PDF from the HTML content
