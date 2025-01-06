@@ -117,3 +117,14 @@ def generate_pdf(request):
     except Exception as e:
         # Handle any errors that occur during PDF generation
         return HttpResponse(f"An error occurred: {e}", status=500)
+
+
+
+# View to display all orders
+def daily_lunch(request):
+    # Retrieve all orders from the database
+    orders = Order.objects.all()
+
+    # Pass orders to the template
+    return render(request, 'orders/daily_lunch.html', {'orders': orders})
+

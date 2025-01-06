@@ -26,4 +26,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('order_list/', views.order_list, name='order_list'),
     path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
+    path('daily_lunch/', views.daily_lunch, name='daily_lunch'),
 ]
