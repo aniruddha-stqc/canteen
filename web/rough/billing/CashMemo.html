@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash Memo</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10mm;
+      color: #333;
+      font-size: 10pt;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 5px;
+      text-align: left;
+      font-size: 10pt;
+    }
+    th {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+    .right-align {
+      text-align: right; /* Ensures right alignment */
+    }
+    .top-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .top-section .cash-memo-number {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 14pt;
+      font-weight: bold;
+    }
+    .top-section div {
+      font-size: 14pt;
+      font-weight: bold;
+    }
+    .top-section div.date {
+      text-align: right; /* Right-align the Date field */
+    }
+    .subject-section h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 14pt;
+      font-weight: bold;
+    }
+    .details-section {
+      text-align: center;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+    .details-section p {
+      margin: 5px 0;
+      font-size: 10pt;
+    }
+    .recipient-name {
+      margin-top: 10px;
+      font-size: 10pt;
+    }
+    .recipient-name span {
+      font-weight: bold;
+    }
+    .underline {
+      text-decoration: underline;
+    }
+    .amount-section {
+      font-weight: bold;
+      text-align: right; /* Right-align Total section */
+      font-size: 12pt;
+    }
+    .footer-section {
+      margin-top: 20px;
+      font-size: 10pt;
+    }
+    .footer-section p {
+      margin: 5px 0;
+    }
+    .footer-signature {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    .footer-signature p {
+      width: 48%;
+      text-align: center;
+    }
+    /* Left align "Approved Requisition Slip" */
+    .approved-requisition {
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+        font-size: 9pt;
+      }
+      .top-section {
+        display: block;
+        margin-bottom: 8mm;
+      }
+      .top-section .cash-memo-number, .top-section div {
+        font-size: 12pt;
+      }
+      .top-section div.date {
+        text-align: right; /* Right-align Date field for printing */
+      }
+      .subject-section h2 {
+        font-size: 12pt;
+      }
+      table {
+        width: 100%;
+        font-size: 9pt;
+        margin-top: 8mm;
+      }
+      th, td {
+        font-size: 9pt;
+        padding: 4px;
+      }
+      .details-section, .recipient-name {
+        font-size: 9pt;
+      }
+      .footer-section {
+        font-size: 9pt;
+        margin-top: 8mm;
+      }
+      .amount-section {
+        font-size: 10pt;
+        font-weight: bold;
+      }
+      .footer-section p {
+        font-size: 9pt;
+      }
+
+      /* Adjust content scaling for printing on a single page */
+      @page {
+        size: A4;
+        margin: 10mm;
+      }
+
+      /* Scale down for a single page */
+      * {
+        page-break-inside: avoid;
+      }
+
+      .top-section, .subject-section, .details-section, .recipient-name, .footer-section {
+        page-break-after: avoid;
+      }
+
+      table {
+        page-break-inside: avoid;
+        page-break-before: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="top-section">
+    <div class="cash-memo-number">No.: 2001</div>
+    <div class="date">Date: 31-Jan-2024</div>
+  </div>
+
+  <!-- Title -->
+  <div class="subject-section">
+    <h2>Cash Memo</h2>
+  </div>
+
+  <!-- Canteen Details -->
+  <div class="details-section">
+    <p><strong>ERTL. EMP. STAFF CANTEEN</strong></p>
+    <p>Block DN, Sector-V, Balt Lake City, Kolkata - 700091</p>
+  </div>
+
+  <!-- Recipient Details -->
+  <div class="recipient-name">
+    <span>Name: </span><span class="underline">SR. DIRECTOR, ERTL (EAST), KOLKATA</span>
+  </div>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Qty.</th>
+        <th>Description</th>
+        <th>Rate</th>
+        <th>Amount (Rs.)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>31-Jan-2024</td>
+        <td class="right-align">90</td>
+        <td>Tea</td>
+        <td class="right-align">10/-</td>
+        <td class="right-align">900.00</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td>Mineral Water</td>
+        <td class="right-align">12/-</td>
+        <td class="right-align">1080.00</td>
+      </tr>
+      <tr>
+        <td>15-Feb-2024</td>
+        <td class="right-align">35</td>
+        <td>Tea</td>
+        <td class="right-align">10/-</td>
+        <td class="right-align">350.00</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td>Biscuit A-Type</td>
+        <td class="right-align">16/-</td>
+        <td class="right-align">560.00</td>
+      </tr>
+      <tr>
+        <td>20-Mar-2024</td>
+        <td class="right-align">03</td>
+        <td>Lunch B-Type</td>
+        <td class="right-align">160/-</td>
+        <td class="right-align">480.00</td>
+      </tr>
+      <tr>
+        <td>29-Mar-2024</td>
+        <td class="right-align">02</td>
+        <td>Lunch B-Type</td>
+        <td class="right-align">160/-</td>
+        <td class="right-align">320.00</td>
+      </tr>
+      <tr>
+        <td>01-Apr-2024</td>
+        <td class="right-align">04</td>
+        <td>Lunch A-Type</td>
+        <td class="right-align">120/-</td>
+        <td class="right-align">480.00</td>
+      </tr>
+      <tr>
+        <td>06-Apr-2024</td>
+        <td class="right-align">10</td>
+        <td>Tea</td>
+        <td class="right-align">10/-</td>
+        <td class="right-align">100.00</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td>Mineral Water</td>
+        <td class="right-align">12/-</td>
+        <td class="right-align">120.00</td>
+      </tr>
+      <tr>
+        <td>07-Apr-2024</td>
+        <td class="right-align">40</td>
+        <td>Tea</td>
+        <td class="right-align">10/-</td>
+        <td class="right-align">400.00</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td>Mineral Water</td>
+        <td class="right-align">12/-</td>
+        <td class="right-align">480.00</td>
+      </tr>
+      <tr>
+        <td>10-Apr-2024</td>
+        <td class="right-align">10</td>
+        <td>Biscuit A-Type</td>
+        <td class="right-align">16/-</td>
+        <td class="right-align">160.00</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="amount-section">Total</td>
+        <td class="right-align amount-section">4,410.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- Requisition Slip -->
+  <div class="approved-requisition">
+    <p>Approved Requisition Slip is duly attached.</p>
+  </div>
+
+  <!-- Rupees Section -->
+  <div class="footer-section">
+    <p>(Rupees Four Thousand Four Hundred Ten only)</p>
+  </div>
+
+  <!-- Signatures -->
+  <div class="footer-signature">
+    <p>Canteen Clerk</p>
+    <p>Chairman/Hony. Secretary</p>
+  </div>
+</body>
+</html>

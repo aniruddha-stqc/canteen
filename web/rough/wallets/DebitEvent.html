@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERTL Staff Canteen - Debit Notification</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; background-color: #f4f4f4; padding: 20px; }
+        .container { background-color: #fff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h2 { color: #e74c3c; }
+        p { font-size: 14px; }
+        .highlight { font-weight: bold; color: #e74c3c; }
+        .footer { font-size: 12px; text-align: center; color: #888; }
+        .footer a { color: #e74c3c; text-decoration: none; }
+        .button { background-color: #e74c3c; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ERTL Staff Canteen - Debit Notification</h2>
+        <p>Dear User,</p>
+        <p>We want to inform you that a debit transaction has occurred from your wallet. Please find the transaction details below:</p>
+        <p><strong>Transaction Details:</strong></p>
+        <ul>
+            <li><span class="highlight">Amount Debited:</span> ₹{{ debit_amount }}</li>
+            <li><span class="highlight">Remaining Balance:</span> ₹{{ new_balance }}</li>
+            <li><span class="highlight">Date:</span> {{ transaction_date }}</li>
+            <li><span class="highlight">Purpose:</span> {{ particulars }}</li>
+        </ul>
+        <p>If you have any questions or concerns, please feel free to reach out to the ERTL Staff Canteen Committee.</p>
+        <a href="mailto:canteen@ertl.com" class="button">Contact Us</a>
+        <p class="footer">Best regards,<br>ERTL Staff Canteen Committee</p>
+    </div>
+</body>
+</html>

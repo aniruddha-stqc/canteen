@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notesheet Template</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      margin: 20mm 10mm 20mm 25mm; /* Left margin adjusted as per government norms */
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 5px;
+      text-align: left;
+    }
+    tfoot td {
+      text-align: center;
+      vertical-align: middle;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .header .ref {
+      text-align: left;
+    }
+    .header .date {
+      text-align: right;
+    }
+    .subject-section {
+      font-weight: bold;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    .details-section {
+      margin-bottom: 15px;
+      text-align: justify;
+    }
+    .amount-section {
+      font-weight: bold;
+      text-align: right;
+    }
+    .indenting-officer {
+      text-align: right;
+      margin-top: 20px;
+    }
+    .approving-authority {
+      text-align: left;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="ref">Ref: __________________________</div>
+    <div class="date">Date: ____________</div>
+  </div>
+
+  <div class="subject-section">
+    <h2>NOTESHEET</h2>
+  </div>
+
+  <div class="details-section">
+    <p>Subject: Approval for payment of expenditure incurred towards logistic support (i.e., Tea, Snacks, etc.) provided during the "<span id="workshop-title">[Workshop Title]</span>" held on <span id="workshop-date">[Date]</span> at ERTL (E), Kolkata, organized by ERTL (E) Emp. Staff Canteen, reg.</p>
+
+    <p>Tea and packets of Snacks & Sweets were provided to the employees of this Laboratory for attending a workshop on '<span id="workshop-description">[Workshop Description]</span>' conducted at ERTL (E), Kolkata by ERTL (E) Emp. Staff Canteen (Tiffin Room Type-A).</p>
+    <p>Total expenditure incurred towards the above-mentioned refreshment charges is Rs. <span id="total-amount">[Total_Amount]</span>/- (<span id="amount-in-words">[Amount_in_Words]</span>) only vide ERTL Emp. Staff Canteen Cash Memo No. <span id="cash-memo">[Cash_Memo_No]</span> dated <span id="cash-memo-date">[Cash_Memo_Date]</span>. The details of logistic support provided during above-mentioned day is as under:</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Sl. No.</th>
+        <th>Item Description</th>
+        <th>Qty. Supplied</th>
+        <th>Unit Cost (Rs.)</th>
+        <th>Amount (Rs.)</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <tr>
+        <td>1</td>
+        <td>Tea</td>
+        <td>[Tea_Qty]</td>
+        <td>[Tea_Unit_Cost]</td>
+        <td>[Tea_Amount]</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Coffee</td>
+        <td>[Coffee_Qty]</td>
+        <td>[Coffee_Unit_Cost]</td>
+        <td>[Coffee_Amount]</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Biscuit</td>
+        <td>[Biscuit_Qty]</td>
+        <td>[Biscuit_Unit_Cost]</td>
+        <td>[Biscuit_Amount]</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Cold Drinks</td>
+        <td>[CD_Qty]</td>
+        <td>[CD_Unit_Cost]</td>
+        <td>[CD_Amount]</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Mineral Water</td>
+        <td>[MW_Qty]</td>
+        <td>[MW_Unit_Cost]</td>
+        <td>[MW_Amount]</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Others [Others_Specify]</td>
+        <td>[Others_Qty]</td>
+        <td>[Others_Unit_Cost]</td>
+        <td>[Others_Amount]</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="amount-section">[Amount_in_Words]</td>
+        <td class="amount-section" id="total">[Total_Amount]</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div>
+    <p>In view of the above, it is requested to release the payment of Rs. <span id="release-amount">[Total_Amount]</span>/- (<span id="release-amount-words">[Amount_in_Words]</span>) only to M/s. ERTL Emp. Staff Canteen.</p>
+    <p>Submitted for approval please.</p>
+  </div>
+
+  <div class="indenting-officer">
+    <p><span id="indenting-officer-name">[Officer Name]</span></p>
+    <p><span id="indenting-officer-designation">[Officer Designation]</span></p>
+    <p><span id="indenting-officer-role">[Officer Role]</span></p>
+  </div>
+
+  <div class="approving-authority">
+    <p>Sr. Director, ERTL (E)</p>
+  </div>
+
+</body>
+</html>

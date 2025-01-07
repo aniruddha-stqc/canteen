@@ -19,8 +19,8 @@
             margin-top: 0;  /* Removed extra margin */
         }
         .container-fluid {
-            padding-left: 0;
-            padding-right: 0;
+            padding-left: 20;
+            padding-right: 20;
         }
         .row {
             margin-top: 0;  /* Remove margin from row */
@@ -40,8 +40,38 @@
         .mb-3 {
             margin-bottom: 1rem;  /* Adjust margin between form fields */
         }
-        .row > .col-md-6 {
-            padding: 0.5rem;  /* Reduce padding between columns */
+        .form-group {
+            display: flex;  /* Ensure label and input are on the same line */
+            align-items: center;  /* Vertically align label and input */
+            margin-bottom: 1rem;  /* Adjust margin for form group */
+        }
+
+        .form-group .col-md-4 {
+            padding-right: 10px;  /* Add some spacing between label and input */
+        }
+
+        .form-group .form-control {
+            flex-grow: 1;  /* Make input take up remaining space */
+        }
+
+        /* Custom styles to keep cards side by side */
+        .card-container {
+            display: flex;
+            justify-content: space-between;  /* Ensure cards are spaced evenly */
+            gap: 1rem;  /* Space between the cards */
+            flex-wrap: wrap;  /* Allow cards to wrap on smaller screens */
+        }
+
+        .card {
+            flex: 1;  /* Let the cards take equal width */
+            min-width: 48%;  /* Ensure cards don't get too small */
+            margin-bottom: 1rem;  /* Space between rows on smaller screens */
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                min-width: 100%;  /* Ensure cards stack on smaller screens */
+            }
         }
     </style>
 </head>
@@ -87,30 +117,34 @@
 
 <main>
     <div class="container-fluid">
-        <div class="row">
-            <!-- Left Side Input Fields -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header"><span><i class="bi bi-table me-2"></i></span> Daily Lunch Order</div>
-                    <div class="card-body">
-                        <form id="orderForm">
-                            <!-- Mobile Number -->
-                            <div class="mb-3">
-                                <label for="mobileNumber" class="form-label">Mobile Number</label>
+        <div class="card-container">
+            <!-- Left Side Input Fields (Card 1) -->
+            <div class="card">
+                <div class="card-header"><span><i class="bi bi-table me-2"></i></span> Daily Lunch Order</div>
+                <div class="card-body">
+                    <form id="orderForm">
+                        <!-- Mobile Number -->
+                        <div class="form-group row">
+                            <label for="mobileNumber" class="col-md-4 col-form-label">Mobile Number</label>
+                            <div class="col-md-8">
                                 <input type="text" id="mobileNumber" class="form-control" name="mobile"
                                        autocomplete="off" required>
                             </div>
-                            <!-- Order Type -->
-                            <div class="mb-3">
-                                <label for="orderType" class="form-label">Order Type</label>
+                        </div>
+                        <!-- Order Type -->
+                        <div class="form-group row">
+                            <label for="orderType" class="col-md-4 col-form-label">Order Type</label>
+                            <div class="col-md-8">
                                 <select class="form-select" id="orderType" name="orderType" disabled>
                                     <option value="DINE_IN" selected>Dine In</option>
                                     <option value="PARCEL">Parcel</option>
                                 </select>
                             </div>
-                            <!-- Concession Type -->
-                            <div class="mb-3">
-                                <label for="concession" class="form-label">Concession Type</label>
+                        </div>
+                        <!-- Concession Type -->
+                        <div class="form-group row">
+                            <label for="concession" class="col-md-4 col-form-label">Concession Type</label>
+                            <div class="col-md-8">
                                 <select class="form-select" id="concession" name="concession" disabled>
                                     <option value="NONE" selected>None</option>
                                     {% for concession in concessions %}
@@ -119,10 +153,12 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                        </div>
 
-                            <!-- Thali Type -->
-                            <div class="mb-3">
-                                <label for="thaliType" class="form-label">Thali Type</label>
+                        <!-- Thali Type -->
+                        <div class="form-group row">
+                            <label for="thaliType" class="col-md-4 col-form-label">Thali Type</label>
+                            <div class="col-md-8">
                                 <select class="form-select" id="thaliType" name="thaliType" disabled>
                                     <option value="">Select Thali Type</option>
                                     {% for thali in thalis %}
@@ -131,10 +167,12 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                        </div>
 
-                            <!-- Extra Dishes -->
-                            <div class="mb-3">
-                                <label for="extras" class="form-label">Extras</label>
+                        <!-- Extra Dishes -->
+                        <div class="form-group row">
+                            <label for="extras" class="col-md-4 col-form-label">Extras</label>
+                            <div class="col-md-8">
                                 <select class="form-select" id="extras" name="extras" multiple disabled>
                                     {% for extra in extras %}
                                     <option value="{{ extra.short_name }}">{{ extra.short_name }} {{ extra.long_name }}
@@ -142,35 +180,36 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                        </div>
 
-                            <!-- Payment Mode -->
-                            <div class="mb-3">
-                                <label for="payMode" class="form-label">Pay Rs 200 via</label>
+                        <!-- Payment Mode -->
+                        <div class="form-group row">
+                            <label for="payMode" class="col-md-4 col-form-label">Pay Rs 200 via</label>
+                            <div class="col-md-8">
                                 <select class="form-select" id="payMode" name="payMode" disabled required>
                                     <option value="CASH">Cash</option>
                                     <option value="BILL">Bill</option>
+                                    <option value="BILL_CASH">Bill + Cash</option>
                                     <option value="WALLET">Wallet</option>
                                 </select>
                             </div>
+                        </div>
 
-                            <!-- Confirm and Clear Buttons -->
-                            <div class="d-flex justify-content-between">
-                                <button type="submit" class="btn btn-primary">Confirm</button>
-                                <button type="reset" class="btn btn-secondary">Clear</button>
-                            </div>
-                        </form>
-                    </div>
+                        <!-- Confirm and Clear Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                            <button type="reset" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <!-- Right Side Card to Show Selected Data -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header"><span><i class="bi bi-info-circle me-2"></i></span> Order Summary</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Selected Details</h5>
-                        <p id="orderSummary"></p>
-                    </div>
+            <!-- Right Side Card to Show Selected Data (Card 2) -->
+            <div class="card">
+                <div class="card-header"><span><i class="bi bi-info-circle me-2"></i></span> Order Summary</div>
+                <div class="card-body">
+                    <h5 class="card-title">Selected Details</h5>
+                    <p id="orderSummary"></p>
                 </div>
             </div>
         </div>
