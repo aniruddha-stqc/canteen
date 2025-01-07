@@ -3,8 +3,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
 from weasyprint import HTML
-
-from .models import Order  # Import the Order model
+from .models import Order, Customer  # Import the Order model
 
 
 # View to display all orders
@@ -119,12 +118,25 @@ def generate_pdf(request):
         return HttpResponse(f"An error occurred: {e}", status=500)
 
 
+from django.shortcuts import render
+from .models import Customer, Concession, Thali, Extra  # Import your models
 
-# View to display all orders
+
 def daily_lunch(request):
-    # Retrieve all orders from the database
-    orders = Order.objects.all()
+    # Fetch customer data
+    customers = Customer.objects.all().values('name', 'mobile')
 
-    # Pass orders to the template
-    return render(request, 'orders/daily_lunch.html', {'orders': orders})
+    # Fetch concession data from the Concession model
+    concessions = Concession.objects.all()  # Adjust based on your model
+    # Fetch Thali data from the Concession model
+    thali = Thali.objects.all()  # Adjust based on your model
+    extras = Extra.objects.all()  # Fetch all extras
+    # Pass data to the template
+    return render(request, 'orders/daily_lunch.html', {
+        'extras': extras,
+        'customers': list(customers),
+        'concessions': concessions,
+        'thalis': thali
+    })
+
 
