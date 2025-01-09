@@ -280,6 +280,12 @@
             `;
             $('#orderSummary').html(orderDetails);
         });
+        // Reset the form and clear the order summary when the "Clear" button is pressed
+        $('#clearButton').click(function() {
+            $('#orderForm')[0].reset();  // Reset form fields to default
+            $('#orderSummary').html('');  // Clear the order summary
+            toggleFields(false);  // Disable all fields
+        });
     });
 </script>
 

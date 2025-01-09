@@ -140,3 +140,22 @@ def daily_lunch(request):
     })
 
 
+
+def mealrequisition(request):
+    # Fetch customer data
+    customers = Customer.objects.all().values('name', 'mobile')
+
+    # Fetch concession data from the Concession model
+    concessions = Concession.objects.all()  # Adjust based on your model
+    # Fetch Thali data from the Concession model
+    thali = Thali.objects.all()  # Adjust based on your model
+    extras = Extra.objects.all()  # Fetch all extras
+    # Pass data to the template
+    return render(request, 'orders/Mealrequisition.html', {
+        'extras': extras,
+        'customers': list(customers),
+        'concessions': concessions,
+        'thalis': thali
+    })
+
+
