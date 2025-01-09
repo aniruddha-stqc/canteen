@@ -13,20 +13,16 @@
     <title>ERTL Canteen Tea Requisition Form</title>
     <style>
         body {
-            padding-top: 70px; /* Space for the fixed navbar */
+            padding-top: 70px;
         }
 
         main {
-            margin-top: 0; /* Removed extra margin */
+            margin-top: 0;
         }
 
         .container-fluid {
             padding-left: 20px;
             padding-right: 20px;
-        }
-
-        .row {
-            margin-top: 0;
         }
 
         .card-body {
@@ -63,6 +59,44 @@
             flex-grow: 1;
         }
 
+        /* Custom styles for table */
+        .delivery-table th, .delivery-table td {
+            text-align: center;
+            font-size: 0.85rem;
+            padding: 5px 10px; /* Reduce padding */
+        }
+
+        .delivery-table th {
+            width: 8%; /* For Date column */
+        }
+
+        .delivery-table td:nth-child(2),
+        .delivery-table td:nth-child(3),
+        .delivery-table td:nth-child(4),
+        .delivery-table td:nth-child(5),
+        .delivery-table td:nth-child(6) {
+            width: 6%; /* Reduced column width for Tea, Coffee, Biscuits, Cold Drinks, Water */
+        }
+
+        .delivery-table td:nth-child(7) {
+            max-width: 100px; /* For Other column */
+            word-wrap: break-word;
+        }
+
+        .delivery-table td:nth-child(8) {
+            width: 10%; /* For Actions column */
+        }
+
+        /* Adjust input fields to take up the full width of their cells */
+        .delivery-table input[type="number"],
+        .delivery-table input[type="date"],
+        .delivery-table input[type="text"] {
+            width: 100%; /* Make input fields take up the entire width */
+            padding: 3px; /* Reduce padding for smaller inputs */
+            font-size: 0.85rem;
+            box-sizing: border-box; /* Ensure padding doesn't affect width calculation */
+        }
+
         /* Custom styles to keep cards side by side */
         .card-container {
             display: flex;
@@ -80,6 +114,24 @@
         @media (max-width: 768px) {
             .card {
                 min-width: 100%;
+            }
+
+            .delivery-table td,
+            .delivery-table th {
+                font-size: 0.75rem; /* Reduce font size for smaller screens */
+            }
+
+            .delivery-table td:nth-child(2),
+            .delivery-table td:nth-child(3),
+            .delivery-table td:nth-child(4),
+            .delivery-table td:nth-child(5),
+            .delivery-table td:nth-child(6),
+            .delivery-table td:nth-child(7) {
+                width: 8%; /* Adjust column widths for smaller screens */
+            }
+
+            .delivery-table td:nth-child(8) {
+                width: 12%;
             }
         }
     </style>
@@ -121,14 +173,15 @@
                         <div class="form-group row">
                             <label for="purpose" class="col-md-4 col-form-label">Purpose</label>
                             <div class="col-md-8">
-                                <textarea id="purpose" class="form-control" name="purpose" placeholder="Enter purpose" required></textarea>
+                                 <input type="text" id="purpose" class="form-control" name="purpose" placeholder="Enter purpose"
+                                          required maxlength="50">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="indenting_officer" class="col-md-4 col-form-label">Indenting Officer</label>
                             <div class="col-md-8">
                                 <input type="text" id="indenting_officer" class="form-control" name="indenting_officer"
-                                       placeholder="Enter officer's name" required>
+                                       placeholder="Enter officer's name" required maxlength="30">
                             </div>
                         </div>
                         <!-- Designation Field -->
@@ -139,46 +192,51 @@
                                        placeholder="Enter designation" maxlength="20" required>
                             </div>
                         </div>
+
+                        <!-- Remarks / Special Instructions Field -->
+<div class="form-group row">
+    <label for="remarks" class="col-md-4 col-form-label">Remarks / Special Instructions</label>
+    <div class="col-md-8">
+        <textarea id="remarks" class="form-control" name="remarks" placeholder="Enter remarks or special instructions" rows="3"></textarea>
+    </div>
+</div>
+
                         <!-- Delivery Details Table -->
                         <div class="form-group">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered delivery-table">
                                 <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Tea</th>
-                                    <th>Coffee</th>
-                                    <th>Biscuits</th>
-                                    <th>Cold Drinks</th>
-                                    <th>Water</th>
-                                    <th>Remarks</th>
-                                    <th>Actions</th>
-                                </tr>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Tea</th>
+                                        <th>Coffee</th>
+                                        <th>Biscuits</th>
+                                        <th>Cold Drinks</th>
+                                        <th>Water</th>
+                                        <th>Other</th>
+                                        <th>Actions</th>
+                                    </tr>
                                 </thead>
                                 <tbody id="delivery-details">
-                                <tr>
-                                    <td><input type="date" name="delivery_date[]" required></td>
-                                    <td><input type="number" name="tea[]" min="0" max="999" pattern="\d*" maxlength="3">
-                                    </td>
-                                    <td><input type="number" name="coffee[]" min="0" max="999" pattern="\d*"
-                                               maxlength="3"></td>
-                                    <td><input type="number" name="biscuits[]" min="0" max="999" pattern="\d*"
-                                               maxlength="3"></td>
-                                    <td><input type="number" name="cold_drinks[]" min="0" max="999" pattern="\d*"
-                                               maxlength="3"></td>
-                                    <td><input type="number" name="water[]" min="0" max="999" pattern="\d*"
-                                               maxlength="3"></td>
-                                    <td><input type="text" name="remarks[]" placeholder="Optional"></td>
-                                    <td>
-                                        <button type="button" class="btn btn-outline-secondary duplicate-row">
-                                            Duplicate
-                                        </button>
-                                        <button type="button" class="btn btn-outline-danger remove-row">Remove</button>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td><input type="date" name="delivery_date[]" required></td>
+                                        <td><input type="text" name="tea[]" maxlength="3" pattern="\d*" placeholder="Tea" required></td>
+                                        <td><input type="text" name="coffee[]" maxlength="3" pattern="\d*" placeholder="Coffee" required></td>
+                                        <td><input type="text" name="biscuits[]" maxlength="3" pattern="\d*" placeholder="Biscuits" required></td>
+                                        <td><input type="text" name="cold_drinks[]" maxlength="3" pattern="\d*" placeholder="Cold Drinks" required></td>
+                                        <td><input type="text" name="water[]" maxlength="3" pattern="\d*" placeholder="Water" required></td>
+                                        <td><input type="checkbox" class="other-checkbox"></td>
+                                        <td>
+                                            <button type="button" class="btn btn-outline-secondary duplicate-row" title="Duplicate row">
+                                                &#x1F4CB;
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger remove-row" title="Remove row">
+                                                &#x1F5D1;
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-
 
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -190,32 +248,77 @@
     </div>
 </main>
 
+<!-- Modal for "Other" Item -->
+<div class="modal" tabindex="-1" id="other-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Enter Item Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+            <label for="item-name" class="form-label">Item Name</label>
+            <input type="text" class="form-control" id="item-name" placeholder="Enter item name">
+        </div>
+        <div class="mb-3">
+            <label for="item-quantity" class="form-label">Quantity</label>
+            <input type="number" class="form-control" id="item-quantity" placeholder="Enter quantity">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="save-item">Save Item</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="{% static 'lib/js/bootstrap.bundle.min.js' %}"></script>
 <script>
-    $(document).ready(function () {
-        // Duplicate a delivery row
-        $(document).on('click', '.duplicate-row', function () {
-            const row = $(this).closest('tr').clone();
-            row.find('input').val(''); // Clear input values
-            $('#delivery-details').append(row);
-        });
 
-        // Remove a delivery row
-        $(document).on('click', '.remove-row', function () {
-            if ($('#delivery-details tr').length > 1) {
-                $(this).closest('tr').remove();
-            } else {
-                alert('At least one row must be present.');
-            }
+$(document).ready(function () {
+    $(document).on('click', '.duplicate-row', function () {
+        const row = $(this).closest('tr').clone();  // Clone the row
+        row.find('input').each(function() {
+            $(this).val($(this).val());  // Ensure values are copied
         });
-
-        // Handle form submission
-        $('#tea-requisition-form').on('submit', function (e) {
-            e.preventDefault();
-            alert('Tea requisition submitted successfully!');
-            this.reset();
-        });
+        $('#delivery-details').append(row);  // Append the cloned row
     });
+
+    $(document).on('click', '.remove-row', function () {
+        if ($('#delivery-details tr').length > 1) {
+            $(this).closest('tr').remove();
+        } else {
+            alert('At least one row must be present.');
+        }
+    });
+
+    $(document).on('change', '.other-checkbox', function () {
+        const checkbox = $(this);
+        if (checkbox.prop('checked')) {
+            $('#other-modal').modal('show');
+        }
+    });
+
+    $('#save-item').on('click', function () {
+        const itemName = $('#item-name').val();
+        const itemQuantity = $('#item-quantity').val();
+        if (itemName && itemQuantity) {
+            alert('Item saved: ' + itemName + ' (Quantity: ' + itemQuantity + ')');
+            $('#other-modal').modal('hide');
+        } else {
+            alert('Please enter both item name and quantity.');
+        }
+    });
+
+    $('#tea-requisition-form').on('submit', function (e) {
+        e.preventDefault();
+        alert('Tea requisition submitted successfully!');
+        this.reset();
+    });
+});
+
 </script>
 
 </body>
