@@ -7,284 +7,191 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'lib/css/bootstrap.min.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="{% static 'lib/js/bootstrap.bundle.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'lib/css/style.css' %}">
-    <title>Daily Lunch Orders</title>
+    <title>Daily Lunch Order</title>
     <style>
         body {
-            padding-top: 70px;  /* Space for the fixed navbar */
-        }
-        main {
-            margin-top: 0;  /* Removed extra margin */
-        }
-        .container-fluid {
-            padding-left: 20;
-            padding-right: 20;
-        }
-        .row {
-            margin-top: 0;  /* Remove margin from row */
-        }
-        .card-body {
-            padding: 1rem;  /* Reduce padding in cards */
-        }
-        .form-label {
-            font-size: 0.9rem;  /* Reduce label size */
-        }
-        .form-select {
-            font-size: 0.9rem;  /* Reduce select font size */
-        }
-        .btn {
-            font-size: 0.9rem;  /* Reduce button font size */
-        }
-        .mb-3 {
-            margin-bottom: 1rem;  /* Adjust margin between form fields */
-        }
-        .form-group {
-            display: flex;  /* Ensure label and input are on the same line */
-            align-items: center;  /* Vertically align label and input */
-            margin-bottom: 1rem;  /* Adjust margin for form group */
+            padding-top: 70px;
         }
 
-        .form-group .col-md-4 {
-            padding-right: 10px;  /* Add some spacing between label and input */
+        .suggestion-box {
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
         }
 
-        .form-group .form-control {
-            flex-grow: 1;  /* Make input take up remaining space */
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
         }
 
-        /* Custom styles to keep cards side by side */
-        .card-container {
-            display: flex;
-            justify-content: space-between;  /* Ensure cards are spaced evenly */
-            gap: 1rem;  /* Space between the cards */
-            flex-wrap: wrap;  /* Allow cards to wrap on smaller screens */
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
         }
 
-        .card {
-            flex: 1;  /* Let the cards take equal width */
-            min-width: 48%;  /* Ensure cards don't get too small */
-            margin-bottom: 1rem;  /* Space between rows on smaller screens */
-        }
-
-        @media (max-width: 768px) {
-            .card {
-                min-width: 100%;  /* Ensure cards stack on smaller screens */
-            }
+        .table th, .table td {
+            text-align: center;
         }
     </style>
 </head>
 <body>
-
 <!-- Navbar -->
 <nav class="navbar navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
-                aria-controls="offcanvasExample">
-            <span class="navbar-toggler-icon" data-bs-target="#sidebar"></span>
-        </button>
-        <a class="navbar-brand me-auto ms-lg-0 ms-3 text-uppercase fw-bold" href="#">Canteen</a>
+        <a class="navbar-brand" href="#">Daily Lunch Order</a>
     </div>
 </nav>
 
-<!-- Offcanvas Sidebar -->
-<div class="offcanvas offcanvas-start sidebar-nav bg-dark" tabindex="-1" id="sidebar">
-    <div class="offcanvas-body p-0">
-        <nav class="navbar-dark">
-            <ul class="navbar-nav">
-                <li>
-                    <div class="text-muted small fw-bold text-uppercase px-3">CORE</div>
-                </li>
-                <li><a href="#" class="nav-link px-3 active"><span class="me-2"><i
-                        class="bi bi-speedometer2"></i></span> Dashboard</a></li>
-                <li class="my-4">
-                    <hr class="dropdown-divider bg-light"/>
-                </li>
-                <li>
-                    <div class="text-muted small fw-bold text-uppercase px-3 mb-3">Interface</div>
-                </li>
-                <li><a href="/order_list/" class="nav-link px-3" target="_blank"><span class="me-2"><i
-                        class="bi bi-file-earmark-pdf"></i></span> Order List</a></li>
-                <li><a href="/generate_pdf/" class="nav-link px-3" target="_blank"><span class="me-2"><i
-                        class="bi bi-file-earmark-pdf"></i></span> Generate PDF</a></li>
-                <li><a href="#" class="nav-link px-3 disabled" onclick="return false;"><span class="me-2"><i
-                        class="bi bi-file-earmark-pdf"></i></span> Logout</a></li>
-            </ul>
-        </nav>
-    </div>
-</div>
-
 <main>
-    <div class="container-fluid">
-        <div class="card-container">
-            <!-- Left Side Input Fields (Card 1) -->
-            <div class="card">
-                <div class="card-header"><span><i class="bi bi-table me-2"></i></span> Daily Lunch Order</div>
-                <div class="card-body">
-                    <form id="orderForm">
-                        <!-- Mobile Number -->
-                        <div class="form-group row">
-                            <label for="mobileNumber" class="col-md-4 col-form-label">Mobile Number</label>
-                            <div class="col-md-8">
-                                <input type="text" id="mobileNumber" class="form-control" name="mobile"
-                                       autocomplete="off" required>
-                            </div>
-                        </div>
-                        <!-- Order Type -->
-                        <div class="form-group row">
-                            <label for="orderType" class="col-md-4 col-form-label">Order Type</label>
-                            <div class="col-md-8">
-                                <select class="form-select" id="orderType" name="orderType" disabled>
-                                    <option value="DINE_IN" selected>Dine In</option>
-                                    <option value="PARCEL">Parcel</option>
+    <div class="container-fluid mt-5">
+        <form id="daily-lunch-form">
+            <!-- Mobile Number Section -->
+            <div class="form-group row mb-3 position-relative">
+                <label for="mobile_number" class="col-md-4 col-form-label">Mobile / Customer</label>
+                <div class="col-md-8">
+                    <input type="text" id="mobile_number" class="form-control" name="mobile_number"
+                           placeholder="Enter mobile number or name" required autocomplete="off">
+                    <div id="suggestion-box" class="suggestion-box"></div>
+                </div>
+            </div>
+
+            <!-- Lunch Items Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Parcel (Yes/No)</th>
+                            <th>Concession Type</th>
+                            <th>Main Thali</th>
+                            <th>Extra</th>
+                            <th>Price (Auto)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lunch-items">
+                        <tr>
+                            <td>
+                                <select class="form-select" name="parcel[]" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
                                 </select>
-                            </div>
-                        </div>
-                        <!-- Concession Type -->
-                        <div class="form-group row">
-                            <label for="concession" class="col-md-4 col-form-label">Concession Type</label>
-                            <div class="col-md-8">
-                                <select class="form-select" id="concession" name="concession" disabled>
-                                    <option value="NONE" selected>None</option>
+                            </td>
+                            <td>
+                                <select class="form-select" name="concession[]" required>
                                     {% for concession in concessions %}
-                                    <option value="{{ concession.category_name }}">{{ concession.category_name }}
-                                    </option>
+                                        <option value="{{ concession.type }}">{{ concession.type }}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
-                        </div>
-
-                        <!-- Thali Type -->
-                        <div class="form-group row">
-                            <label for="thaliType" class="col-md-4 col-form-label">Thali Type</label>
-                            <div class="col-md-8">
-                                <select class="form-select" id="thaliType" name="thaliType" disabled>
-                                    <option value="">Select Thali Type</option>
+                            </td>
+                            <td>
+                                <select class="form-select" name="main_thali[]" required>
                                     {% for thali in thalis %}
-                                    <option value="{{ thali.short_name }}">{{ thali.short_name }} {{ thali.long_name}}
-                                    </option>
+                                        <option value="{{ thali.name }}">{{ thali.name }}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
-                        </div>
-
-                        <!-- Extra Dishes -->
-                        <div class="form-group row">
-                            <label for="extras" class="col-md-4 col-form-label">Extras</label>
-                            <div class="col-md-8">
-                                <select class="form-select" id="extras" name="extras" multiple disabled>
+                            </td>
+                            <td>
+                                <select class="form-select" name="extra[]" required>
                                     {% for extra in extras %}
-                                    <option value="{{ extra.short_name }}">{{ extra.short_name }} {{ extra.long_name }}
-                                    </option>
+                                        <option value="{{ extra.name }}">{{ extra.name }}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
-                        </div>
-
-                        <!-- Payment Mode -->
-                        <div class="form-group row">
-                            <label for="payMode" class="col-md-4 col-form-label">Pay Rs 200 via</label>
-                            <div class="col-md-8">
-                                <select class="form-select" id="payMode" name="payMode" disabled required>
-                                    <option value="CASH">Cash</option>
-                                    <option value="BILL">Bill</option>
-                                    <option value="BILL_CASH">Bill + Cash</option>
-                                    <option value="WALLET">Wallet</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Confirm and Clear Buttons -->
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Confirm</button>
-                            <button type="reset" class="btn btn-secondary">Clear</button>
-                        </div>
-                    </form>
-                </div>
+                            </td>
+                            <td><input type="text" name="price[]" class="form-control" readonly></td>
+                            <td>
+                                <button type="button" class="btn btn-outline-secondary add-row">&#43;</button>
+                                <button type="button" class="btn btn-outline-danger remove-row">&#x1F5D1;</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Right Side Card to Show Selected Data (Card 2) -->
-            <div class="card">
-                <div class="card-header"><span><i class="bi bi-info-circle me-2"></i></span> Order Summary</div>
-                <div class="card-body">
-                    <h5 class="card-title">Selected Details</h5>
-                    <p id="orderSummary"></p>
-                </div>
+            <!-- Submit and Clear Buttons -->
+            <div class="d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" id="clear-form" class="btn btn-secondary">Clear</button>
             </div>
-        </div>
+        </form>
     </div>
 </main>
 
-<script src="{% static 'lib/js/bootstrap.bundle.min.js' %}"></script>
 <script>
-    $(document).ready(function() {
-        let customerData = {{ customers | safe }};  // Pass customer data from view
+    $(document).ready(function () {
+        // Customer data passed from backend
+        const customers = {{ customers|safe }};
 
-        // Function to enable/disable fields
-        function toggleFields(enable) {
-            $('#concession, #orderType, #thaliType, #extras, #payMode').prop('disabled', !enable);
-        }
+        // Show suggestions based on input
+        $('#mobile_number').on('input', function () {
+            const input = $(this).val().toLowerCase();
+            const matches = customers.filter(customer =>
+                customer.name.toLowerCase().includes(input) || customer.mobile.includes(input)
+            );
 
-        // Autocomplete for mobile number field
-        $('#mobileNumber').autocomplete({
-            source: function(request, response) {
-                let results = $.map(customerData, function(customer) {
-                    if (customer.mobile.includes(request.term) || customer.name.toLowerCase().includes(request.term.toLowerCase())) {
-                        return {
-                            label: `${customer.name} - ${customer.mobile}`,
-                            value: customer.mobile,
-                            name: customer.name
-                        };
-                    }
+            const suggestionBox = $('#suggestion-box');
+            suggestionBox.empty();
+
+            if (matches.length > 0 && input.length > 0) {
+                matches.forEach(customer => {
+                    suggestionBox.append(`
+                        <div class="suggestion-item" data-mobile="${customer.mobile}" data-name="${customer.name}">
+                            <strong>${customer.name}</strong> - ${customer.mobile}
+                        </div>
+                    `);
                 });
-                response(results);
-            },
-            minLength: 1,
-            select: function(event, ui) {
-                $('#orderSummary').html(`Customer Name: ${ui.item.name}`);
-                toggleFields(true);
-            }
-        });
-
-        // Manual input handling
-        $('#mobileNumber').on('input', function() {
-            let mobileNumber = $(this).val();
-            let customer = customerData.find(c => c.mobile === mobileNumber);
-
-            if (customer) {
-                $('#orderSummary').html('Customer Name: ' + customer.name);
-                toggleFields(true);
+                suggestionBox.show();
             } else {
-                $('#orderSummary').html('Customer Not Available');
-                toggleFields(false);
+                suggestionBox.hide();
             }
         });
 
-        // Handle form submission
-        $('#orderForm').submit(function(e) {
-            e.preventDefault();
-            let mobileNumber = $('#mobileNumber').val();
-            let concession = $('#concession').val();
-            let orderType = $('#orderType').val();
-            let thaliType = $('#thaliType').val();
-            let extras = $('#extras').val();
-            let payMode = $('#payMode').val();
-            let orderDetails = `
-                <strong>Mobile Number:</strong> ${mobileNumber} <br>
-                <strong>Concession Type:</strong> ${concession} <br>
-                <strong>Order Type:</strong> ${orderType} <br>
-                <strong>Thali Type:</strong> ${thaliType} <br>
-                <strong>Extras:</strong> ${extras ? extras.join(', ') : 'None'} <br>
-                <strong>Payment Mode:</strong> ${payMode}
-            `;
-            $('#orderSummary').html(orderDetails);
+        // Select suggestion
+        $(document).on('click', '.suggestion-item', function () {
+            const mobile = $(this).data('mobile');
+            const name = $(this).data('name');
+            $('#mobile_number').val(`${mobile} - ${name}`);
+            $('#suggestion-box').hide();
         });
-        // Reset the form and clear the order summary when the "Clear" button is pressed
-        $('#clearButton').click(function() {
-            $('#orderForm')[0].reset();  // Reset form fields to default
-            $('#orderSummary').html('');  // Clear the order summary
-            toggleFields(false);  // Disable all fields
+
+        // Hide suggestion box when clicking elsewhere
+        $(document).click(function (e) {
+            if (!$(e.target).closest('#mobile_number, #suggestion-box').length) {
+                $('#suggestion-box').hide();
+            }
+        });
+
+        // Add new row functionality
+        $(document).on('click', '.add-row', function () {
+            const row = $(this).closest('tr').clone();
+            $('#lunch-items').append(row);
+        });
+
+        // Remove row functionality
+        $(document).on('click', '.remove-row', function () {
+            if ($('#lunch-items tr').length > 1) {
+                $(this).closest('tr').remove();
+            } else {
+                alert('At least one row must be present.');
+            }
+        });
+
+        // Clear form functionality
+        $('#clear-form').on('click', function () {
+            $('#daily-lunch-form')[0].reset();
+            $('#lunch-items').find('tr:gt(0)').remove(); // Keep only the first row
+            $('#suggestion-box').hide();
+        });
+
+        // Submit form functionality
+        $('#daily-lunch-form').on('submit', function (e) {
+            e.preventDefault();
+            alert('Form submitted successfully!');
         });
     });
 </script>

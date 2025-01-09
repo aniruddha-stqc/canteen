@@ -121,24 +121,26 @@ def generate_pdf(request):
 from django.shortcuts import render
 from .models import Customer, Concession, Thali, Extra  # Import your models
 
-
 def daily_lunch(request):
     # Fetch customer data
     customers = Customer.objects.all().values('name', 'mobile')
 
-    # Fetch concession data from the Concession model
-    concessions = Concession.objects.all()  # Adjust based on your model
-    # Fetch Thali data from the Concession model
-    thali = Thali.objects.all()  # Adjust based on your model
-    extras = Extra.objects.all()  # Fetch all extras
+    # Fetch concession data
+    concessions = Concession.objects.all().values('category')  # Adjust fields as needed for Concession model
+
+    # Fetch Thali data
+    thali = Thali.objects.all().values('category')  # Adjust fields as needed for Thali model
+
+    # Fetch Extra data
+    extras = Extra.objects.all().values('short_name', 'long_name', 'price')  # Correct field names
+
     # Pass data to the template
     return render(request, 'orders/daily_lunch.html', {
-        'extras': extras,
         'customers': list(customers),
-        'concessions': concessions,
-        'thalis': thali
+        'concessions': list(concessions),
+        'thalis': list(thali),
+        'extras': list(extras),
     })
-
 
 
 def mealrequisition(request):
