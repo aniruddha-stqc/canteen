@@ -1,9 +1,9 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
 from weasyprint import HTML
-from .models import Order, Customer  # Import the Order model
+
+from .models import Order  # Import the Order model
 
 
 # View to display all orders
@@ -118,15 +118,16 @@ def generate_pdf(request):
         return HttpResponse(f"An error occurred: {e}", status=500)
 
 
-from django.shortcuts import render
-from .models import Customer, Concession, Thali, Extra  # Import your models
+from .models import Customer, Thali, Extra  # Import your models
+
+from .models import Category  # Import the Category model
 
 def daily_lunch(request):
     # Fetch customer data
     customers = Customer.objects.all().values('name', 'mobile')
 
-    # Fetch concession data
-    concessions = Concession.objects.all().values('category')  # Adjust fields as needed for Concession model
+    # Fetch category data
+    categories = Category.objects.all().values('category_name')  # Adjust fields as needed for Category model
 
     # Fetch Thali data
     thali = Thali.objects.all().values('category')  # Adjust fields as needed for Thali model
@@ -137,27 +138,131 @@ def daily_lunch(request):
     # Pass data to the template
     return render(request, 'orders/daily_lunch.html', {
         'customers': list(customers),
-        'concessions': list(concessions),
+        'categories': list(categories),  # Use categories instead of concessions
         'thalis': list(thali),
         'extras': list(extras),
     })
 
+from .models import Customer, Category, Thali, Extra  # Import Category instead of Concession
 
 def mealrequisition(request):
     # Fetch customer data
     customers = Customer.objects.all().values('name', 'mobile')
 
-    # Fetch concession data from the Concession model
-    concessions = Concession.objects.all()  # Adjust based on your model
-    # Fetch Thali data from the Concession model
-    thali = Thali.objects.all()  # Adjust based on your model
+    # Fetch category data (instead of concession)
+    categories = Category.objects.all()  # Fetch categories instead of concessions
+
+    # Fetch Thali data
+    thali = Thali.objects.all()  # Fetch Thali data
+
+    # Fetch Extra data
     extras = Extra.objects.all()  # Fetch all extras
+
     # Pass data to the template
     return render(request, 'orders/Mealrequisition.html', {
         'extras': extras,
         'customers': list(customers),
-        'concessions': concessions,
+        'categories': categories,  # Pass categories instead of concessions
         'thalis': thali
     })
 
+
+from django.shortcuts import redirect
+from .models import Wallet
+from .forms import WalletTopUpForm
+
+def wallet_top_up(request):
+    success_message = ""
+    error_message = ""
+
+    if request.method == "POST":
+        form = WalletTopUpForm(request.POST)
+        if form.is_valid():
+            mobile_number = form.cleaned_data['mobile']
+            credit_amount = form.cleaned_data['credit']
+
+            if credit_amount <= 0:
+                error_message = "Top-up amount must be greater than zero."
+            else:
+                try:
+                    last_wallet = Wallet.objects.filter(mobile=mobile_number).order_by('-transaction_time').first()
+                    new_balance = last_wallet.balance + credit_amount if last_wallet else credit_amount
+
+                    Wallet.objects.create(
+                        mobile=mobile_number,
+                        transaction="Top-Up",
+                        credit=credit_amount,
+                        balance=new_balance
+                    )
+
+                    success_message = f"Top-up successful! New balance: ₹{new_balance}"
+
+                except Exception as e:
+                    error_message = f"An error occurred while processing your top-up: {str(e)}"
+
+    else:
+        form = WalletTopUpForm()
+
+    return render(request, "wallet_topup.html", {
+        "form": form,
+        "success_message": success_message,
+        "error_message": error_message,
+    })
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import CustomerForm
+
+
+def add_customer(request):
+    if request.method == 'POST':
+        # Instantiate the form with POST data
+        form = CustomerForm(request.POST)
+
+        if form.is_valid():
+            try:
+                # Save the form data to create a new customer
+                form.save()
+
+                # Add a success message for the user
+                messages.success(request, "Customer added successfully!")
+
+                # Redirect to the same page or another success page
+                return redirect('add_customer')  # Replace with your redirect URL
+            except Exception as e:
+                # Handle any exceptions that occur during saving
+                messages.error(request, f"An error occurred while adding the customer: {str(e)}")
+        else:
+            # If the form is not valid, send error messages for the form fields
+            for field in form.errors:
+                messages.error(request, f"Error in {field}: {form.errors[field]}")
+
+    else:
+        # If it's a GET request, just display the empty form
+        form = CustomerForm()
+
+    # Render the template with the form and any messages
+    return render(request, 'add_customer.html', {'form': form})
+
+
+from django.shortcuts import render, redirect
+from .forms import CategoryForm
+
+from django.shortcuts import render, redirect
+from .forms import CategoryForm
+
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            # Save the category with the manually entered category_id
+            form.save()
+            return render(request, 'add_category.html', {'form': form, 'success_message': 'Category added successfully!'})
+        else:
+            return render(request, 'add_category.html', {'form': form, 'error_message': 'There was an error in your form. Please check your inputs.'})
+    else:
+        form = CategoryForm()
+        return render(request, 'add_category.html', {'form': form})
 

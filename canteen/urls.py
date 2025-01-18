@@ -18,14 +18,14 @@ from django.contrib import admin
 from django.urls import path
 from web import views
 
-urlpatterns = [
-    # URL pattern to display orders
 
-]
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('order_list/', views.order_list, name='order_list'),
     path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
     path('daily_lunch/', views.daily_lunch, name='daily_lunch'),
     path('Mealrequisition/', views.mealrequisition, name='Mealrequisition'),
+    path('wallet_topup/', views.wallet_top_up, name='wallet_top_up'),
+    path('add_customer/', views.add_customer, name='add_customer'),
+    path('add_category/', views.add_category, name='add_category'),
 ]

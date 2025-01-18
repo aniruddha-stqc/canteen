@@ -5,6 +5,6 @@ from .models import *
 admin.site.register(Thali)
 admin.site.register(Extra)
 admin.site.register(Customer)
-admin.site.register(Concession)
+admin.site.register(Category)
 admin.site.register(Order)
 admin.site.register(Wallet)

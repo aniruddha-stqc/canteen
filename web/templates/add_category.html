@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Category</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Add Category</h2>
+        
+        <!-- Display success or error messages -->
+        {% if success_message %}
+            <div class="alert alert-success">{{ success_message }}</div>
+        {% endif %}
+        {% if error_message %}
+            <div class="alert alert-danger">{{ error_message }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Category ID Field -->
+            <div class="form-group">
+                <label for="id_category_id">Category ID</label>
+                {{ form.category_id }}
+                {% if form.category_id.errors %}
+                    <div class="text-danger">
+                        {% for error in form.category_id.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Category Name Field -->
+            <div class="form-group">
+                <label for="id_category_name">Category Name</label>
+                {{ form.category_name }}
+                {% if form.category_name.errors %}
+                    <div class="text-danger">
+                        {% for error in form.category_name.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Category</button>
+        </form>
+    </div>
+
+    <!-- Optional: Add Bootstrap JS if needed -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

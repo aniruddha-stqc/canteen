@@ -1,0 +1,105 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'lib/css/bootstrap.min.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'lib/js/bootstrap.bundle.min.js' %}"></script>
+    <title>Wallet Top-Up</title>
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Wallet Top-Up</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <div class="form-container">
+        <h2 class="text-center">Top-Up Wallet</h2>
+        <form method="post" class="mt-4" id="topUpForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile Number</label>
+                {{ form.mobile }}
+            </div>
+            <div class="mb-3">
+                <label for="credit" class="form-label">Top-Up Amount</label>
+                {{ form.credit }}
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="submitButton" disabled>Top-Up</button>
+        </form>
+    </div>
+</div>
+
+<!-- Success/Error Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="modalHeader" class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p id="feedbackMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var successMessage = "{{ success_message|escapejs }}";
+    var errorMessage = "{{ error_message|escapejs }}"; // Error message for invalid amount
+
+    // Enable or disable the submit button based on form validity
+    const form = document.getElementById("topUpForm");
+    const submitButton = document.getElementById("submitButton");
+
+    form.addEventListener('input', function() {
+        // Enable the submit button only if the form is valid
+        if (form.checkValidity()) {
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
+    });
+
+    // Modal handling
+    if (successMessage) {
+        document.getElementById("feedbackMessage").innerText = successMessage;
+        document.getElementById("feedbackModalLabel").innerText = "Top-Up Successful";
+        document.getElementById("modalHeader").classList.add("bg-success", "text-white");
+        var feedbackModal = new bootstrap.Modal(document.getElementById("feedbackModal"));
+        feedbackModal.show();
+    }
+
+    if (errorMessage) {
+        document.getElementById("feedbackMessage").innerText = errorMessage;
+        document.getElementById("feedbackModalLabel").innerText = "Top-Up Failed";
+        document.getElementById("modalHeader").classList.add("bg-danger", "text-white");
+        var feedbackModal = new bootstrap.Modal(document.getElementById("feedbackModal"));
+        feedbackModal.show();
+    }
+</script>
+
+</body>
+</html>
