@@ -5,12 +5,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'lib/css/bootstrap.min.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'lib/js/bootstrap.bundle.min.js' %}"></script>
     <title>Customer Data Form</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>Customer Data Form</h2>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Customer Data</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <div class="form-container">
+        <h2 class="text-center">Customer Data Form</h2>
 
         <!-- Display success or error messages -->
         {% if success_message %}
@@ -24,9 +49,9 @@
             {% csrf_token %}
 
             <!-- Full Name Field -->
-            <div class="form-group">
-                <label for="id_name">Full Name</label>
-                {{ form.name }}
+            <div class="mb-3">
+                <label for="id_name" class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-control" id="id_name" value="{{ form.name.value }}">
                 {% if form.name.errors %}
                     <div class="text-danger">
                         {% for error in form.name.errors %}
@@ -37,9 +62,9 @@
             </div>
 
             <!-- Email Address Field -->
-            <div class="form-group">
-                <label for="id_email">Email Address</label>
-                {{ form.email }}
+            <div class="mb-3">
+                <label for="id_email" class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" id="id_email" value="{{ form.email.value }}">
                 {% if form.email.errors %}
                     <div class="text-danger">
                         {% for error in form.email.errors %}
@@ -50,9 +75,9 @@
             </div>
 
             <!-- Mobile Number Field -->
-            <div class="form-group">
-                <label for="id_mobile">Mobile Number</label>
-                {{ form.mobile }}
+            <div class="mb-3">
+                <label for="id_mobile" class="form-label">Mobile Number</label>
+                <input type="text" name="mobile" class="form-control" id="id_mobile" value="{{ form.mobile.value }}">
                 {% if form.mobile.errors %}
                     <div class="text-danger">
                         {% for error in form.mobile.errors %}
@@ -62,10 +87,16 @@
                 {% endif %}
             </div>
 
-            <!-- Category Field -->
-            <div class="form-group">
-                <label for="id_category">Category</label>
-                {{ form.category }}
+            <!-- Category Field (Dropdown) -->
+            <div class="mb-3">
+                <label for="id_category" class="form-label">Category</label>
+                <select name="category" class="form-control" id="id_category">
+                    {% for value, label in form.category.field.choices %}
+                        <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
                 {% if form.category.errors %}
                     <div class="text-danger">
                         {% for error in form.category.errors %}
@@ -75,13 +106,10 @@
                 {% endif %}
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
         </form>
     </div>
+</div>
 
-    <!-- Optional: Add Bootstrap JS if needed -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
