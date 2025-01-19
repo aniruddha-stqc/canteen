@@ -38,13 +38,27 @@ from .models import Customer, Category
 
 
 class CustomerForm(forms.ModelForm):
+
+
     class Meta:
         model = Customer
         fields = ['mobile', 'name', 'email', 'category']  # Fields to include in the form
 
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+
+        # Ensure name contains only alphabetic characters and spaces
+        if not name.replace(" ", "").isalpha():
+            raise forms.ValidationError("Name must contain only letters.")
+
+        return name
+
     # Additional validations can be added if needed
     def clean_mobile(self):
         mobile = self.cleaned_data.get('mobile')
+        # Ensure mobile is exactly 10 digits and contains only numbers
+        if not mobile.isdigit():
+            raise forms.ValidationError("Mobile number must contain only digits.")
 
         # Ensure mobile is exactly 10 digits
         if len(mobile) != 10:

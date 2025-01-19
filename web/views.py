@@ -217,34 +217,72 @@ from .forms import CustomerForm
 
 
 def add_customer(request):
+
     if request.method == 'POST':
         # Instantiate the form with POST data
         form = CustomerForm(request.POST)
 
-        if form.is_valid():
-            try:
-                # Save the form data to create a new customer
-                form.save()
+        # Check if it's a confirmation action
+        if 'confirm' in request.POST:
+            print("Form data:", request.POST)  # Log submitted form data
+            if form.is_valid():
 
-                # Add a success message for the user
-                messages.success(request, "Customer added successfully!")
+                # Check if all required fields are present and valid
+                mobile = form.cleaned_data.get('mobile')
+                name = form.cleaned_data.get('name')
+                category = form.cleaned_data.get('category')
+                email = form.cleaned_data.get('email')
 
-                # Redirect to the same page or another success page
-                return redirect('add_customer')  # Replace with your redirect URL
-            except Exception as e:
-                # Handle any exceptions that occur during saving
-                messages.error(request, f"An error occurred while adding the customer: {str(e)}")
-        else:
-            # If the form is not valid, send error messages for the form fields
-            for field in form.errors:
-                messages.error(request, f"Error in {field}: {form.errors[field]}")
+                # Ensure that mobile, name, and category are not empty
+                if not mobile or not name or not category:
+                    messages.error(request, "All required fields (mobile, name, category) must be filled out.")
+                    return render(request, 'add_customer.html', {
+                        'form': form,
+                        'mobile': mobile,
+                        'name': name,
+                        'category': category,
+                        'email': email,
+                        'confirmation': True
+                    })
 
+
+                try:
+                    # Save the form data to create a new customer
+                    form.save()
+
+                    # Add a success message for the user
+                    messages.success(request, "Customer added successfully!")
+
+                    # Redirect to the same page or another success page
+                    return redirect('add_customer')  # Replace with your redirect URL
+                except Exception as e:
+                    # Handle any exceptions that occur during saving
+                    messages.error(request, f"An error occurred while adding the customer: {str(e)}")
+            else:
+                # If the form is not valid, send error messages for the form fields
+                for field in form.errors:
+                    messages.error(request, f"Error in {field}: {form.errors[field]}")
+        # Check if it's a cancel action
+        elif 'cancel' in request.POST:
+            # Redirect back to the previous page (no changes are saved)
+            return redirect('add_customer')  # Replace with your previous view
+
+        # If form is valid and not a confirmation or cancel, display the confirmation card
+        if form.is_valid() and not ('confirm' in request.POST or 'cancel' in request.POST):
+            return render(request, 'add_customer.html', {
+                'form': form,
+                'mobile': form.cleaned_data['mobile'],
+                'name': form.cleaned_data['name'],
+                'category': form.cleaned_data['category'],
+                'email': form.cleaned_data['email'],
+                'confirmation': True
+            })
     else:
         # If it's a GET request, just display the empty form
         form = CustomerForm()
 
     # Render the template with the form and any messages
-    return render(request, 'add_customer.html', {'form': form})
+    return render(request, 'add_customer.html', {'form': form, 'confirmation': False})
 
 
 from django.shortcuts import render, redirect
@@ -254,6 +292,8 @@ from django.shortcuts import render, redirect
 from .forms import CategoryForm
 
 def add_category(request):
+
+
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():

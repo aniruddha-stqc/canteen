@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'lib/css/bootstrap.min.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'lib/js/bootstrap.bundle.min.js' %}"></script>
-    <title>Customer Data Form</title>
+    <title>Add New Customer</title>
     <style>
         .form-container {
             max-width: 500px;
@@ -35,7 +35,7 @@
 <!-- Main Content -->
 <div class="container mt-5">
     <div class="form-container">
-        <h2 class="text-center">Customer Data Form</h2>
+        <h2 class="text-center">Add New Customer</h2>
 
         <!-- Display success or error messages -->
         {% if success_message %}
@@ -46,70 +46,102 @@
         {% endif %}
 
         <form method="post">
-            {% csrf_token %}
+                {% csrf_token %}
 
-            <!-- Full Name Field -->
-            <div class="mb-3">
-                <label for="id_name" class="form-label">Full Name</label>
-                <input type="text" name="name" class="form-control" id="id_name" value="{{ form.name.value }}">
-                {% if form.name.errors %}
-                    <div class="text-danger">
-                        {% for error in form.name.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
+
+                {% if confirmation %}
+                <!-- Confirmation Card -->
+                    <div class="confirmation-card">
+                        <h4 class="text-center">Please Confirm the Details</h4>
+                        <p><strong>Mobile Number:</strong> {{ mobile }}</p>
+                        <p><strong>Name:</strong> {{ name }}</p>
+                        <p><strong>Category:</strong> {{ category }} (ID: {{ category.id }})</p> <!-- Display both description and ID -->
+                        <p><strong>Email:</strong> {{ email }}</p>
+
+                        <!-- Hidden fields to pass data with the form -->
+                        <input type="hidden" name="mobile" value="{{ mobile }}">
+                        <input type="hidden" name="name" value="{{ name }}">
+                        <input type="hidden" name="category" value="{{ category.id }}"> <!-- Pass category ID -->
+                        <input type="hidden" name="email" value="{{ email }}">
+
+                        <!-- Confirm and Cancel buttons -->
+                        <button type="submit" name="confirm" class="btn btn-success w-100">Confirm</button>
+                        <a href="{% url 'add_customer' %}" class="btn btn-danger w-100 mt-2">Cancel</a>
                     </div>
-                {% endif %}
-            </div>
+                {% else %}
+                <!-- Mobile Number Field -->
+                <div class="mb-3">
+                    <label for="id_mobile" class="form-label">Mobile Number</label>
+                    <input type="text" name="mobile" class="form-control" id="id_mobile" value="{{ form.mobile.value|default:'' }}">
+                    {% if form.mobile.errors %}
+                        <div class="text-danger">
+                            {% for error in form.mobile.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <!-- Full Name Field -->
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Full Name</label>
+                    <input type="text" name="name" class="form-control" id="id_name" value="{{ form.name.value|default:'' }}" oninput="convertToProperCase(this)">
+                    {% if form.name.errors %}
+                        <div class="text-danger">
+                            {% for error in form.name.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-            <!-- Email Address Field -->
-            <div class="mb-3">
-                <label for="id_email" class="form-label">Email Address</label>
-                <input type="email" name="email" class="form-control" id="id_email" value="{{ form.email.value }}">
-                {% if form.email.errors %}
-                    <div class="text-danger">
-                        {% for error in form.email.errors %}
-                            <p>{{ error }}</p>
+
+                <!-- Category Field (Dropdown) -->
+                <div class="mb-3">
+                    <label for="id_category" class="form-label">Category</label>
+                    <select name="category" class="form-control" id="id_category">
+                        {% for value, label in form.category.field.choices %}
+                            <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>
+                                {{ value }} - {{ label }}  <!-- Display "ID - Name" -->
+                            </option>
                         {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
+                    </select>
+                    {% if form.category.errors %}
+                        <div class="text-danger">
+                            {% for error in form.category.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-            <!-- Mobile Number Field -->
-            <div class="mb-3">
-                <label for="id_mobile" class="form-label">Mobile Number</label>
-                <input type="text" name="mobile" class="form-control" id="id_mobile" value="{{ form.mobile.value }}">
-                {% if form.mobile.errors %}
-                    <div class="text-danger">
-                        {% for error in form.mobile.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
+                <!-- Email Address Field -->
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" id="id_email" value="{{ form.email.value|default:'' }}">
+                    {% if form.email.errors %}
+                        <div class="text-danger">
+                            {% for error in form.email.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-            <!-- Category Field (Dropdown) -->
-            <div class="mb-3">
-                <label for="id_category" class="form-label">Category</label>
-                <select name="category" class="form-control" id="id_category">
-                    {% for value, label in form.category.field.choices %}
-                        <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-                    {% endfor %}
-                </select>
-                {% if form.category.errors %}
-                    <div class="text-danger">
-                        {% for error in form.category.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Submit</button>
+                <!-- Submit Button for Initial Form -->
+                <button type="submit" class="btn btn-primary w-100">Submit</button>
+            {% endif %}
         </form>
     </div>
 </div>
-
+<script>
+function convertToProperCase(input) {
+    let words = input.value.toLowerCase().split(' ');
+    for (let i = 0; i < words.length; i++) {
+        words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+    }
+    input.value = words.join(' ');
+}
+</script>
 </body>
+
 </html>

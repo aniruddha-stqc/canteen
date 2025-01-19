@@ -35,10 +35,10 @@ class Category(models.Model):
 from .models import Category  # Import Category once
 
 class Customer(models.Model):
-    mobile = models.CharField(max_length=10, primary_key=True, default='0000000000')
-    name = models.CharField(max_length=15)
+    mobile = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=20)
     email = models.EmailField(blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='customers')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='customers')
 
     def __str__(self):
         return self.name
