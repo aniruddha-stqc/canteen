@@ -4,8 +4,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'lib/css/bootstrap.min.css' %}">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="{% static 'lib/css/bootstrap.min.css' %}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'lib/js/bootstrap.bundle.min.js' %}"></script>
     <title>Add New Customer</title>
@@ -23,6 +23,8 @@
         }
     </style>
 </head>
+
+
 <body>
 
 <!-- Navbar -->
@@ -39,108 +41,138 @@
 
         <!-- Display success or error messages -->
         {% if success_message %}
-            <div class="alert alert-success">{{ success_message }}</div>
+        <div class="alert alert-success">{{ success_message }}</div>
         {% endif %}
         {% if error_message %}
-            <div class="alert alert-danger">{{ error_message }}</div>
+        <div class="alert alert-danger">{{ error_message }}</div>
         {% endif %}
 
         <form method="post">
-                {% csrf_token %}
+            {% csrf_token %}
 
 
-                {% if confirmation %}
-                <!-- Confirmation Card -->
-                    <div class="confirmation-card">
-                        <h4 class="text-center">Please Confirm the Details</h4>
-                        <p><strong>Mobile Number:</strong> {{ mobile }}</p>
-                        <p><strong>Name:</strong> {{ name }}</p>
-                        <p><strong>Category:</strong> {{ category.category_id }} - {{ category.category_name }}</p> <!-- Display both description and ID -->
-                        <p><strong>Email:</strong> {{ email }}</p>
+            {% if confirmation %}
+            <!-- Confirmation Card -->
+            <div class="confirmation-card">
+                <h4 class="text-center">Please Confirm the Details</h4>
+                <p><strong>Mobile Number:</strong> {{ mobile }}</p>
+                <p><strong>Name:</strong> {{ name }}</p>
+                <p><strong>Category:</strong> {{ category.category_id }} - {{ category.category_name }}</p>
+                <!-- Display both description and ID -->
+                <p><strong>Email:</strong> {{ email }}</p>
 
-                        <!-- Hidden fields to pass data with the form -->
-                        <input type="hidden" name="mobile" value="{{ mobile }}">
-                        <input type="hidden" name="name" value="{{ name }}">
-                        <input type="hidden" name="category" value="{{ category.category_id }}"> <!-- Pass category ID -->
-                        <input type="hidden" name="email" value="{{ email }}">
+                <!-- Hidden fields to pass data with the form -->
+                <input name="mobile" type="hidden" value="{{ mobile }}">
+                <input name="name" type="hidden" value="{{ name }}">
+                <input name="category" type="hidden" value="{{ category.category_id }}"> <!-- Pass category ID -->
+                <input name="email" type="hidden" value="{{ email }}">
 
-                        <!-- Confirm and Cancel buttons -->
-                        <button type="submit" name="confirm" class="btn btn-success w-100">Confirm</button>
-                        <a href="{% url 'add_customer' %}" class="btn btn-danger w-100 mt-2">Cancel</a>
-                    </div>
-                {% else %}
-                <!-- Mobile Number Field -->
-                <div class="mb-3">
-                    <label for="id_mobile" class="form-label">Mobile Number</label>
-                    <input type="text" name="mobile" class="form-control" id="id_mobile" value="{{ form.mobile.value|default:'' }}">
-                    {% if form.mobile.errors %}
-                        <div class="text-danger">
-                            {% for error in form.mobile.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                <!-- Confirm and Cancel buttons -->
+                <button class="btn btn-success w-100" name="confirm" type="submit">Confirm</button>
+                <a class="btn btn-danger w-100 mt-2" href="{% url 'add_customer' %}">Cancel</a>
+            </div>
+            {% else %}
+            <!-- Mobile Number Field -->
+            <div class="mb-3">
+                <label class="form-label" for="id_mobile">Mobile Number</label>
+                <input class="form-control" id="id_mobile" name="mobile" type="text"
+                       value="{{ form.mobile.value|default:'' }}">
+                {% if form.mobile.errors %}
+                <div class="text-danger">
+                    {% for error in form.mobile.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
                 </div>
-                <!-- Full Name Field -->
-                <div class="mb-3">
-                    <label for="id_name" class="form-label">Full Name</label>
-                    <input type="text" name="name" class="form-control" id="id_name" value="{{ form.name.value|default:'' }}" oninput="convertToProperCase(this)">
-                    {% if form.name.errors %}
-                        <div class="text-danger">
-                            {% for error in form.name.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                {% endif %}
+            </div>
+            <!-- Full Name Field -->
+            <div class="mb-3">
+                <label class="form-label" for="id_name">Full Name</label>
+                <input class="form-control" id="id_name" name="name" oninput="convertToProperCase(this)"
+                       type="text" value="{{ form.name.value|default:'' }}">
+                {% if form.name.errors %}
+                <div class="text-danger">
+                    {% for error in form.name.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
                 </div>
+                {% endif %}
+            </div>
 
 
-                <!-- Category Field (Dropdown) -->
-                <div class="mb-3">
-                    <label for="id_category" class="form-label">Category</label>
-                    <select name="category" class="form-control" id="id_category">
-                        {% for value, label in form.category.field.choices %}
-                            <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>
-                                {{ value }} - {{ label }}  <!-- Display "ID - Name" -->
-                            </option>
-                        {% endfor %}
-                    </select>
-                    {% if form.category.errors %}
-                        <div class="text-danger">
-                            {% for error in form.category.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+            <!-- Category Field (Dropdown) -->
+            <div class="mb-3">
+                <label class="form-label" for="id_category">Category</label>
+                <select class="form-control" id="id_category" name="category">
+                    {% for value, label in form.category.field.choices %}
+                    <option %} %}selected{% endif form.category.value if value="{{ value }}" value== {%>
+                        {{ value }} - {{ label }}  <!-- Display "ID - Name" -->
+                    </option>
+                    {% endfor %}
+                </select>
+                {% if form.category.errors %}
+                <div class="text-danger">
+                    {% for error in form.category.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
                 </div>
+                {% endif %}
+            </div>
 
-                <!-- Email Address Field -->
-                <div class="mb-3">
-                    <label for="id_email" class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-control" id="id_email" value="{{ form.email.value|default:'' }}">
-                    {% if form.email.errors %}
-                        <div class="text-danger">
-                            {% for error in form.email.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+            <!-- Email Address Field -->
+            <div class="mb-3">
+                <label class="form-label" for="id_email">Email Address</label>
+                <input class="form-control" id="id_email" name="email" type="email"
+                       value="{{ form.email.value|default:'' }}">
+                {% if form.email.errors %}
+                <div class="text-danger">
+                    {% for error in form.email.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
                 </div>
+                {% endif %}
+            </div>
 
-                <!-- Submit Button for Initial Form -->
-                <button type="submit" class="btn btn-primary w-100">Submit</button>
+            <!-- Submit Button for Initial Form -->
+            <button class="btn btn-primary w-100" type="submit">Submit</button>
             {% endif %}
         </form>
     </div>
 </div>
+
+<!-- Toast Container (Positioned at the bottom-right) -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+    <div aria-atomic="true" aria-live="assertive" class="toast align-items-center text-white bg-success border-0"
+         id="successToast" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+            <button aria-label="Close" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    type="button"></button>
+        </div>
+    </div>
+</div>
+
 <script>
-function convertToProperCase(input) {
-    let words = input.value.toLowerCase().split(' ');
-    for (let i = 0; i < words.length; i++) {
-        words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+    function convertToProperCase(input) {
+        let words = input.value.toLowerCase().split(' ');
+        for (let i = 0; i < words.length; i++) {
+            words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+        }
+        input.value = words.join(' ');
     }
-    input.value = words.join(' ');
-}
+
+     document.addEventListener("DOMContentLoaded", function() {
+        {% if messages %}
+            {% for message in messages %}
+                var toast = new bootstrap.Toast(document.getElementById('successToast'));
+                toast.show();
+            {% endfor %}
+        {% endif %}
+    });
 </script>
 </body>
 
