@@ -55,13 +55,13 @@
                         <h4 class="text-center">Please Confirm the Details</h4>
                         <p><strong>Mobile Number:</strong> {{ mobile }}</p>
                         <p><strong>Name:</strong> {{ name }}</p>
-                        <p><strong>Category:</strong> {{ category }} (ID: {{ category.id }})</p> <!-- Display both description and ID -->
+                        <p><strong>Category:</strong> {{ category.category_id }} - {{ category.category_name }}</p> <!-- Display both description and ID -->
                         <p><strong>Email:</strong> {{ email }}</p>
 
                         <!-- Hidden fields to pass data with the form -->
                         <input type="hidden" name="mobile" value="{{ mobile }}">
                         <input type="hidden" name="name" value="{{ name }}">
-                        <input type="hidden" name="category" value="{{ category.id }}"> <!-- Pass category ID -->
+                        <input type="hidden" name="category" value="{{ category.category_id }}"> <!-- Pass category ID -->
                         <input type="hidden" name="email" value="{{ email }}">
 
                         <!-- Confirm and Cancel buttons -->
