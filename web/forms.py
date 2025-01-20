@@ -7,11 +7,7 @@ from datetime import datetime
 
 
 class WalletTopUpForm(forms.ModelForm):
-    # Mobile field for user input
-    mobile = forms.CharField(max_length=10, min_length=10, required=True)
-
-    # Credit field for top-up amount
-    credit = forms.IntegerField(min_value=1, required=True)
+    mobile = forms.CharField(max_length=10)  # Take mobile as a string input
 
     class Meta:
         model = Wallet
@@ -19,19 +15,24 @@ class WalletTopUpForm(forms.ModelForm):
 
     def clean_mobile(self):
         mobile = self.cleaned_data.get('mobile')
+
         # Ensure mobile is exactly 10 digits and contains only numbers
         if not mobile.isdigit():
             raise forms.ValidationError("Mobile number must contain only digits.")
-        # Check if the mobile number exists in the Customer table
-        if not Customer.objects.filter(mobile=mobile).exists():
-            raise forms.ValidationError("No customer found with this mobile number.")
+
         # Ensure mobile is exactly 10 digits
         if len(mobile) != 10:
             raise forms.ValidationError("Mobile number must be 10 digits.")
 
-        # Optionally: You could add more validations for the mobile number format
+        # Check if the mobile number exists in the Customer table
+        try:
+            customer = Customer.objects.get(mobile=mobile)
+        except Customer.DoesNotExist:
+            raise forms.ValidationError("No customer found with this mobile number.")
 
-        return mobile
+        # If customer exists, return the customer instance instead of just the mobile string
+        print(f"clean_mobile: Mobile number is valid: {mobile}")
+        return customer  # Returning the Customer instance
 
     def clean_credit(self):
         credit = self.cleaned_data['credit']
@@ -41,10 +42,12 @@ class WalletTopUpForm(forms.ModelForm):
         return credit
 
     def save(self, commit=True):
-        # Override the save method to assign the customer ForeignKey
         instance = super().save(commit=False)
-        customer = self.cleaned_data['mobile']  # Get customer object from cleaned data
-        instance.customer = customer  # Assign the customer to the wallet instance
+        # Convert mobile string into a Customer instance
+        customer = Customer.objects.get(mobile=self.cleaned_data['mobile'])
+        # Retrieve the customer instance by mobile
+        # Assign the Customer instance to the Wallet instance
+        instance.mobile = customer
 
         # Set initial balance equal to the credit amount
         instance.balance = instance.credit
@@ -56,6 +59,7 @@ class WalletTopUpForm(forms.ModelForm):
             instance.save()
 
         return instance
+
 
 
 from django import forms
