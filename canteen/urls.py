@@ -25,7 +25,7 @@ urlpatterns = [
     path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
     path('daily_lunch/', views.daily_lunch, name='daily_lunch'),
     path('Mealrequisition/', views.mealrequisition, name='Mealrequisition'),
-    path('wallet_topup/', views.wallet_top_up, name='wallet_top_up'),
+    path('wallet_top_up/', views.wallet_top_up, name='wallet_top_up'),
     path('add_customer/', views.add_customer, name='add_customer'),
     path('add_category/', views.add_category, name='add_category'),
 ]

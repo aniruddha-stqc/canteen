@@ -38,20 +38,26 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
 
+# Assuming the Customer model is already defined as shown in your code
+from datetime import datetime
+from django.db import models
+
+# Assuming the Customer model is already defined as shown in your code
 
 class Wallet(models.Model):
     mobile = models.ForeignKey(Customer, on_delete=models.CASCADE, to_field='mobile', related_name='wallets')
     transaction_time = models.CharField(max_length=100, default=datetime.now().strftime('%Y%m%d%H%M%S'))
-    transaction = models.CharField(max_length=50)
+    particulars = models.CharField(max_length=50)  # Renamed field
     credit = models.IntegerField(default=0)
     debit = models.IntegerField(default=0)
     balance = models.IntegerField(default=0)
 
     class Meta:
-        unique_together = ('mobile', 'transaction_time')
+        unique_together = ('mobile', 'transaction_time')  # Ensures the combination of mobile and transaction_time is unique
 
     def __str__(self):
         return f"Wallet ({self.mobile}, {self.transaction_time}): Balance = {self.balance}"
+
 
 # Order model
 class Order(models.Model):
