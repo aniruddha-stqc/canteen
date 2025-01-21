@@ -191,8 +191,8 @@ def wallet_top_up(request):
 
             try:
                 # Get the customer instance
-                customer = Customer.objects.get(mobile=mobile)
-                print(f"Mobile: {customer.mobile}, Credit: {credit}")
+                customer_mobile = Customer.objects.get(mobile=mobile)
+                print(f"Mobile: {customer_mobile}, Credit: {credit}")
             except Customer.DoesNotExist:
                 messages.error(request, "This mobile number is not associated with any customer.")
                 return redirect('wallet_top_up')
@@ -202,13 +202,13 @@ def wallet_top_up(request):
             try:
                 with transaction.atomic():
                     # Retrieve the latest wallet entry (if exists) to calculate balance
-                    latest_wallet = Wallet.objects.filter(mobile=customer.mobile).order_by('-transaction_time').first()
+                    latest_wallet = Wallet.objects.filter(mobile=customer_mobile).order_by('-transaction_time').first()
                     previous_balance = latest_wallet.balance if latest_wallet else 0  # Default to 0 if no previous record
                     print("Creating wallet...")
 
                     # Create new wallet entry
                     new_wallet = Wallet.objects.create(
-                        mobile=customer.mobile,
+                        mobile=customer_mobile,
                         credit=credit,
                         particulars="Top Up",
                         balance=previous_balance + credit,  # Updated balance
@@ -221,6 +221,7 @@ def wallet_top_up(request):
                 return redirect('wallet_top_up')
 
             except Exception as e:
+                print({str(e)})
                 # Handle any errors that occur during the wallet creation process
                 messages.error(request, f"An error occurred while processing the top-up: {str(e)}")
                 return redirect('wallet_top_up')

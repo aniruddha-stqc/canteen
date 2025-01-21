@@ -36,7 +36,7 @@ class Customer(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='customers')
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return self.name
+        return self.mobile
 
 # Assuming the Customer model is already defined as shown in your code
 from datetime import datetime
