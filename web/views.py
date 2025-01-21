@@ -120,10 +120,6 @@ def generate_pdf(request):
         return HttpResponse(f"An error occurred: {e}", status=500)
 
 
-from .models import Customer, Thali, Extra  # Import your models
-
-from .models import Category  # Import the Category model
-
 def daily_lunch(request):
     # Fetch customer data
     customers = Customer.objects.all().values('name', 'mobile')
@@ -193,7 +189,7 @@ def wallet_top_up(request):
             # This is the confirmation step - process the final top-up
             mobile = request.POST.get("mobile")
             credit = request.POST.get("credit")
-
+            print("Form data:", request.POST)  # Log submitted form data
             try:
                 # Get the customer instance
                 customer_mobile = Customer.objects.get(mobile=mobile)

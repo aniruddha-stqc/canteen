@@ -33,7 +33,7 @@
 <div class="container mt-5">
     <div class="form-container">
         <h2 class="text-center">Top-Up Wallet</h2>
-        
+
         {% if confirmation %}
         <!-- Confirmation Window -->
         <div class="confirmation-card">
@@ -42,22 +42,26 @@
             <p><strong>Customer Name:</strong> {{ customer_name }}</p>
             <p><strong>Current Balance:</strong> {{ previous_balance }}</p>
             <p><strong>Top-Up Amount:</strong> {{ credit }}</p>
-            
+
             <!-- Hidden fields to pass data with the form -->
-            <input type="hidden" name="mobile" value="{{ mobile }}">
-            <input type="hidden" name="credit" value="{{ credit }}">
-            
-            <!-- Confirm and Cancel buttons -->
-            <button type="submit" class="btn btn-success w-100" name="confirm">Confirm</button>
+            <form method="post">
+                {% csrf_token %}  <!-- <--- Ensure this is inside the form --->
+                <input type="hidden" name="mobile" value="{{ mobile }}">
+                <input type="hidden" name="credit" value="{{ credit }}">
+
+                <!-- Confirm and Cancel buttons -->
+                <button type="submit" class="btn btn-success w-100" name="confirm">Confirm</button>
+            </form>
             <a href="{% url 'wallet_top_up' %}" class="btn btn-danger w-100 mt-2">Cancel</a>
         </div>
         {% else %}
-        
+
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="id_mobile" class="form-label">Mobile Number</label>
-                <input type="text" class="form-control" id="id_mobile" name="mobile" value="{{ form.mobile.value|default:'' }}">
+                <input type="text" class="form-control" id="id_mobile" name="mobile"
+                       value="{{ form.mobile.value|default:'' }}">
                 {% if form.mobile.errors %}
                 <div class="text-danger">
                     {% for error in form.mobile.errors %}<p>{{ error }}</p>{% endfor %}
@@ -66,7 +70,8 @@
             </div>
             <div class="mb-3">
                 <label for="id_credit" class="form-label">Top-Up Amount</label>
-                <input type="number" class="form-control" id="id_credit" name="credit" value="{{ form.credit.value|default:'' }}">
+                <input type="number" class="form-control" id="id_credit" name="credit"
+                       value="{{ form.credit.value|default:'' }}">
                 {% if form.credit.errors %}
                 <div class="text-danger">
                     {% for error in form.credit.errors %}<p>{{ error }}</p>{% endfor %}
@@ -75,9 +80,38 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Submit</button>
         </form>
-        
+
         {% endif %}
     </div>
 </div>
+{% if messages %}
+<!-- Toast Container (Positioned at the bottom-right) -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+    {% for message in messages %}
+    <div class="toast align-items-center text-white
+        {% if message.tags == 'success' %}bg-success{% elif message.tags == 'error' %}bg-danger{% endif %}
+        border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<!-- Ensure Bootstrap Toast is Initialized -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl)
+        });
+        toastList.forEach(toast => toast.show());
+    });
+</script>
 </body>
 </html>
