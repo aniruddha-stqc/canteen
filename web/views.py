@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from weasyprint import HTML
 
+from web import mail_send
 from .models import Order  # Import the Order model
 
 
@@ -214,6 +215,9 @@ def wallet_top_up(request):
 
                 # Success message after successful transaction
                 messages.success(request, f"Top-Up of {credit} successful for {mobile}.")
+
+
+                mail_send.send_mail_top_up("aniruddha2008@gmail.com", 100, 120, "19-Jan-2024")
                 return redirect('wallet_top_up')
 
             except Exception as e:
@@ -344,4 +348,5 @@ def add_category(request):
     else:
         form = CategoryForm()
         return render(request, 'add_category.html', {'form': form})
+
 

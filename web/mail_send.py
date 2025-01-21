@@ -80,15 +80,67 @@ def main():
     """
     sender_email = "ertlcanteen@gmail.com"  # Email for authentication
     sender_dummy_email = "noreplyertlcanteen@gmail.com"  # The 'From' address
-    recipient_emails = ["sreemoyee.meditation@gmail.com", "aniruddha2008@gmail.com", "aniruddha@stqc.gov.in",
-                        "avishek@stqc.gov.in"]
+    recipient_emails = ["aniruddha2008@gmail.com"]
 
     # Get email password from environment variable
     sender_password = "izvvljlqnlvrojbl"
 
     # Specify the file to attach (set to None or "NIL" to skip attachment)
-    attachment_file = r"C:\Users\avishek.raychoudhury\Desktop\CBSE-Class-12-Computer-Science-Syllabus-2023-24.pdf"  # or use None for no attachment
-    #attachment_file = "NIL"
+    #attachment_file = r"C:\Users\avishek.raychoudhury\Desktop\CBSE-Class-12-Computer-Science-Syllabus-2023-24.pdf"  # or use None for no attachment
+    attachment_file = "NIL"
+    # Call the send_email function
+    send_email(sender_email, sender_password, sender_dummy_email, recipient_emails, subject, body, attachment_file)
+
+def send_mail_top_up(recipient_emails, amount, balance, transaction_date):
+    # Define the subject and body of the email
+    subject = "Top Up Confirmation"
+
+    body = '''<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ERTL Staff Canteen - Top Up Notification</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; color: #333; line-height: 1.6; background-color: #f4f4f4; padding: 20px; }}
+            .container {{ background-color: #fff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
+            h2 {{ color: #2c3e50; }}
+            p {{ font-size: 14px; }}
+            .highlight {{ font-weight: bold; color: #16a085; }}
+            .footer {{ font-size: 12px; text-align: center; color: #888; }}
+            .footer a {{ color: #16a085; text-decoration: none; }}
+            .button {{ background-color: #16a085; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>ERTL Staff Canteen - Top Up Notification</h2>
+            <p>Dear User,</p>
+            <p>We are pleased to inform you that your wallet has been successfully topped up. Here are the details of your transaction:</p>
+            <p><strong>Transaction Details:</strong></p>
+            <ul>
+                <li><span class="highlight">Amount Added:</span> ₹{amount}</li>
+                <li><span class="highlight">New Balance:</span> ₹{balance}</li>
+                <li><span class="highlight">Date:</span> {transaction_date}</li>
+            </ul>
+            <p>If you have any questions or need further assistance, please feel free to contact the ERTL Staff Canteen Committee.</p>
+            <a href="mailto:ertlcanteen@gmail.com" class="button">Contact Us</a>
+            <p class="footer">Best regards,<br>ERTL Staff Canteen Committee</p>
+        </div>
+    </body>
+    </html>
+    '''.format(amount=amount, balance=balance, transaction_date=transaction_date)
+
+    sender_email = "ertlcanteen@gmail.com"  # Email for authentication
+    sender_dummy_email = "noreplyertlcanteen@gmail.com"  # The 'From' address
+    #recipient_emails = ["aniruddha2008@gmail.com"]
+
+    # Get email password from environment variable
+    sender_password = "izvvljlqnlvrojbl"
+
+    # Specify the file to attach (set to None or "NIL" to skip attachment)
+    # attachment_file = r"C:\Users\avishek.raychoudhury\Desktop\CBSE-Class-12-Computer-Science-Syllabus-2023-24.pdf"  # or use None for no attachment
+    attachment_file = "NIL"
     # Call the send_email function
     send_email(sender_email, sender_password, sender_dummy_email, recipient_emails, subject, body, attachment_file)
 
