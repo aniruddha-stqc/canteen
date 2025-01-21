@@ -179,57 +179,80 @@ from django.shortcuts import render, redirect
 from .forms import WalletTopUpForm
 from .models import Customer, Wallet
 
+from django.shortcuts import render, redirect
+from django.db import transaction
+from django.utils import timezone
+from django.contrib import messages
+from .forms import WalletTopUpForm
+from .models import Customer, Wallet
+
+
 def wallet_top_up(request):
     if request.method == 'POST':
-        form = WalletTopUpForm(request.POST)
-        print(form.errors)
-
-        if form.is_valid():
-            mobile = form.cleaned_data['mobile']
-            credit = form.cleaned_data['credit']
-
+        if "confirm" in request.POST:
+            # This is the confirmation step - process the final top-up
+            mobile = request.POST.get("mobile")
+            credit = request.POST.get("credit")
 
             try:
                 # Get the customer instance
                 customer_mobile = Customer.objects.get(mobile=mobile)
-                print(f"Mobile: {customer_mobile}, Credit: {credit}")
             except Customer.DoesNotExist:
                 messages.error(request, "This mobile number is not associated with any customer.")
                 return redirect('wallet_top_up')
 
-
             # Transaction handling to ensure atomicity
             try:
                 with transaction.atomic():
-                    # Retrieve the latest wallet entry (if exists) to calculate balance
                     latest_wallet = Wallet.objects.filter(mobile=customer_mobile).order_by('-transaction_time').first()
                     previous_balance = latest_wallet.balance if latest_wallet else 0  # Default to 0 if no previous record
-                    print("Creating wallet...")
 
                     # Create new wallet entry
                     new_wallet = Wallet.objects.create(
                         mobile=customer_mobile,
                         credit=credit,
                         particulars="Top Up",
-                        balance=previous_balance + credit,  # Updated balance
+                        balance=previous_balance + float(credit),
                         transaction_time=timezone.now()
                     )
-                print(f"New wallet created: {new_wallet}")
 
                 # Success message after successful transaction
                 messages.success(request, f"Top-Up of {credit} successful for {mobile}.")
                 return redirect('wallet_top_up')
 
             except Exception as e:
-                print({str(e)})
-                # Handle any errors that occur during the wallet creation process
                 messages.error(request, f"An error occurred while processing the top-up: {str(e)}")
                 return redirect('wallet_top_up')
+
+        else:
+            # This is the first submission - show confirmation page
+            form = WalletTopUpForm(request.POST)
+            if form.is_valid():
+                mobile = form.cleaned_data['mobile']
+                credit = form.cleaned_data['credit']
+
+                try:
+                    customer = Customer.objects.get(mobile=mobile)  # Get customer details
+                    latest_wallet = Wallet.objects.filter(mobile=customer).order_by('-transaction_time').first()
+                    previous_balance = latest_wallet.balance if latest_wallet else 0  # Default to 0 if no previous record
+
+                except Customer.DoesNotExist:
+                    messages.error(request, "This mobile number is not associated with any customer.")
+                    return redirect('wallet_top_up')
+
+                return render(request, 'wallet_top_up.html', {
+                    "confirmation": True,  # Flag to show confirmation page
+                    "mobile": mobile,
+                    "credit": credit,
+                    "customer_name": customer.name,  # Pass customer name
+                    "previous_balance": previous_balance  # Pass current balance
+                })
 
     else:
         form = WalletTopUpForm()
 
     return render(request, 'wallet_top_up.html', {'form': form})
+
 
 from django.shortcuts import render, redirect
 from django.contrib import messages

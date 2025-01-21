@@ -1,0 +1,119 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="{% static 'lib/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'lib/js/bootstrap.bundle.min.js' %}"></script>
+    <title>Wallet Top-Up</title>
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Wallet Top-Up</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <div class="form-container">
+        <h2 class="text-center">Top-Up Wallet</h2>
+
+        <!-- Display success or error messages -->
+        {% if success_message %}
+        <div class="alert alert-success">{{ success_message }}</div>
+        {% endif %}
+        {% if error_message %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+        {% endif %}
+
+        <form method="post" id="topUpForm" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile Number</label>
+                {{ form.mobile }}
+                {% if form.mobile.errors %}
+                    <div class="text-danger">
+                        {% for error in form.mobile.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="credit" class="form-label">Top-Up Amount</label>
+                {{ form.credit }}
+                {% if form.credit.errors %}
+                    <div class="text-danger">
+                        {% for error in form.credit.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="submitButton">Top-Up</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    var successMessage = "{{ success_message|escapejs }}";
+    var errorMessage = "{{ error_message|escapejs }}";
+
+    // Modal handling
+    if (successMessage) {
+        document.getElementById("feedbackMessage").innerText = successMessage;
+        document.getElementById("feedbackModalLabel").innerText = "Top-Up Successful";
+        document.getElementById("modalHeader").classList.add("bg-success", "text-white");
+        var feedbackModal = new bootstrap.Modal(document.getElementById("feedbackModal"));
+        feedbackModal.show();
+    }
+
+    if (errorMessage) {
+        document.getElementById("feedbackMessage").innerText = errorMessage;
+        document.getElementById("feedbackModalLabel").innerText = "Top-Up Failed";
+        document.getElementById("modalHeader").classList.add("bg-danger", "text-white");
+        var feedbackModal = new bootstrap.Modal(document.getElementById("feedbackModal"));
+        feedbackModal.show();
+    }
+
+    // Form submission validation
+    const form = document.getElementById("topUpForm");
+    const submitButton = document.getElementById("submitButton");
+
+    form.addEventListener('submit', function(event) {
+        const creditValue = document.getElementById("id_credit").value;
+
+        // Check if the credit value is blank or 0
+        if (!creditValue || parseFloat(creditValue) <= 0) {
+            event.preventDefault();  // Prevent form submission
+            const errorDiv = document.createElement("div");
+            errorDiv.classList.add("text-danger");
+            errorDiv.innerHTML = "<p>Please enter a valid top-up amount greater than 0.</p>";
+
+            // Add error message below the Top-Up Amount field
+            const creditField = document.getElementById("id_credit").parentNode;
+            if (!creditField.querySelector(".text-danger")) {
+                creditField.appendChild(errorDiv);
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
