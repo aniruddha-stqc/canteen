@@ -172,69 +172,63 @@ def mealrequisition(request):
 from .forms import WalletTopUpForm
 from .models import Wallet, Customer
 
-from django.shortcuts import render, redirect
+from django.db import transaction
+from django.utils import timezone
 from django.contrib import messages
-from datetime import datetime
+from django.shortcuts import render, redirect
 from .forms import WalletTopUpForm
 from .models import Customer, Wallet
 
 def wallet_top_up(request):
-
     if request.method == 'POST':
-        print("Form data:", request.POST)  # Log submitted form data
         form = WalletTopUpForm(request.POST)
+        print(form.errors)
 
         if form.is_valid():
-            # Get the cleaned data (mobile and credit)
             mobile = form.cleaned_data['mobile']
             credit = form.cleaned_data['credit']
-            print(f"Mobile: {mobile}, Credit: {credit}")  # Log cleaned data
+
 
             try:
-                # Retrieve the customer based on mobile number
+                # Get the customer instance
                 customer = Customer.objects.get(mobile=mobile)
-                print(f"Customer found: {customer}")  # Log found customer
-
-                # Prepare the particulars text (Top Up)
-                particulars = "Top Up"
-
-                # Create a new Wallet entry
-                new_wallet = Wallet(
-                    mobile=customer,
-                    credit=credit,
-                    particulars=particulars,
-                    balance=credit,  # Initially balance will be equal to the credit
-                    transaction_time=datetime.now().strftime('%Y%m%d%H%M%S')  # Set the transaction time
-                )
-                new_wallet.save()
-
-                # Filter Wallet entries for the customer, sorted by transaction time
-                wallet_entries = Wallet.objects.filter(mobile=customer).order_by('-transaction_time')
-                print(f"Wallet entries: {wallet_entries}")  # Log wallet entries
-
-                # Get the latest wallet entry
-                latest_wallet = wallet_entries.first()
-                print(f"Latest wallet entry: {latest_wallet}")  # Log latest wallet entry
-
-                # Update balance by calculating previous balance + credit - debit
-                balance = latest_wallet.balance + latest_wallet.credit - latest_wallet.debit
-                latest_wallet.balance = balance
-                latest_wallet.save()  # Save the updated balance
-
-                # Success message
-                messages.success(request, f"Top-Up of {credit} successful for {mobile}.")
-                return redirect('wallet_top_up')  # Redirect or show success page
-
+                print(f"Mobile: {customer.mobile}, Credit: {credit}")
             except Customer.DoesNotExist:
-                # If customer does not exist, show error message
                 messages.error(request, "This mobile number is not associated with any customer.")
-                return redirect('wallet_top_up')  # Redirect back to the form page
+                return redirect('wallet_top_up')
+
+
+            # Transaction handling to ensure atomicity
+            try:
+                with transaction.atomic():
+                    # Retrieve the latest wallet entry (if exists) to calculate balance
+                    latest_wallet = Wallet.objects.filter(mobile=customer.mobile).order_by('-transaction_time').first()
+                    previous_balance = latest_wallet.balance if latest_wallet else 0  # Default to 0 if no previous record
+                    print("Creating wallet...")
+
+                    # Create new wallet entry
+                    new_wallet = Wallet.objects.create(
+                        mobile=customer.mobile,
+                        credit=credit,
+                        particulars="Top Up",
+                        balance=previous_balance + credit,  # Updated balance
+                        transaction_time=timezone.now()
+                    )
+                print(f"New wallet created: {new_wallet}")
+
+                # Success message after successful transaction
+                messages.success(request, f"Top-Up of {credit} successful for {mobile}.")
+                return redirect('wallet_top_up')
+
+            except Exception as e:
+                # Handle any errors that occur during the wallet creation process
+                messages.error(request, f"An error occurred while processing the top-up: {str(e)}")
+                return redirect('wallet_top_up')
 
     else:
         form = WalletTopUpForm()
 
     return render(request, 'wallet_top_up.html', {'form': form})
-
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
